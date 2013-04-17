@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("erlimemnet")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Erlang imem network Interface")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("K2 Informatics GmbH")]
 [assembly: AssemblyProduct("erlimemnet")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
