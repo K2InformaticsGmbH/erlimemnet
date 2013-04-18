@@ -9,8 +9,8 @@ Public Class Mpro
     End Sub
 
     Public Overloads Shared Function Connect(ByVal host As String, ByVal port As Integer) As Mpro
-        Dim client As TcpClient = New TcpClient(host, port)
-        Dim s As NetworkStream = client.GetStream()
+        Dim client = New TcpClient(host, port)
+        Dim s = client.GetStream()
         Return New Mpro(s)
     End Function
 
@@ -21,7 +21,6 @@ Public Class Mpro
         Return CallMproMFASync("putSourcePeerName", AppId, Key, SpName)
     End Function
     Public Function deleteSourcePeer(ByRef AppId As String, ByRef Key As String) As ArrayList
-
         Return CallMproMFASync("deleteSourcePeer", AppId, Key)
     End Function
     Public Function listSourcePeerKeys(ByRef AppId As String) As ArrayList
@@ -46,7 +45,7 @@ Public Class Mpro
         Return CallMproMFASync("getWhitelist", AppId, Key)
     End Function
     Private Function CallMproMFASync(ByVal fun As String, ByVal ParamArray argsRest() As Object) As ArrayList
-        Return CallImemMFASync("mpro_dal_prov", fun, argsRest)
+        Return TranslateResult(UnwrapResult(CallImemMFASync("mpro_dal_prov", fun, argsRest)))
     End Function
 
 End Class
