@@ -31,10 +31,10 @@ Public Class Mpro
         Return CallMproMFASync("listSourcePeers", AppId)
     End Function
     Public Function putSourcePeer(ByRef AppId As String, ByRef Key As String, ByRef ChStr As String, ByRef OptStr As String) As ArrayList
-        Return CallMproMFASync("deleteWhitelist", AppId, Key, ChStr, OptStr)
+        Return CallMproMFASync("putSourcePeer", AppId, Key, ChStr, OptStr)
     End Function
     Public Function putWhitelist(ByRef AppId As String, ByRef Key As String, ByRef IpAddressStr As String, ByRef OptStr As String) As ArrayList
-        Return CallMproMFASync("deleteWhitelist", AppId, Key, IpAddressStr, OptStr)
+        Return CallMproMFASync("putWhitelist", AppId, Key, IpAddressStr, OptStr)
     End Function
     Public Function deleteWhitelist(ByRef AppId As String, ByRef Key As String, ByRef IpAddressStr As String) As ArrayList
         Return CallMproMFASync("deleteWhitelist", AppId, Key, IpAddressStr)
