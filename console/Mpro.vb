@@ -17,9 +17,6 @@ Public Class Mpro
     Public Function listDestinationChannels(ByVal AppId) As ArrayList
         Return CallMproMFASync("listDestinationChannels", AppId)
     End Function
-    Public Function putSourcePeerName(ByRef AppId As String, ByRef Key As String, ByRef SpName As String) As ArrayList
-        Return CallMproMFASync("putSourcePeerName", AppId, Key, SpName)
-    End Function
     Public Function deleteSourcePeer(ByRef AppId As String, ByRef Key As String) As ArrayList
         Return CallMproMFASync("deleteSourcePeer", AppId, Key)
     End Function
@@ -29,8 +26,8 @@ Public Class Mpro
     Public Function listSourcePeers(ByRef AppId As String) As ArrayList
         Return CallMproMFASync("listSourcePeers", AppId)
     End Function
-    Public Function putSourcePeer(ByRef AppId As String, ByRef Key As String, ByRef ChStr As String, ByRef OptStr As String) As ArrayList
-        Return CallMproMFASync("putSourcePeer", AppId, Key, ChStr, OptStr)
+    Public Function putSourcePeer(ByRef AppId As String, ByRef Key As String, ByRef ChStr As String, ByRef SpName As String, ByRef OptStr As String) As ArrayList
+        Return CallMproMFASync("putSourcePeer", AppId, Key, ChStr, SpName, OptStr)
     End Function
     Public Function putWhitelist(ByRef AppId As String, ByRef Key As String, ByRef IpAddressStr As String, ByRef OptStr As String) As ArrayList
         Return CallMproMFASync("putWhitelist", AppId, Key, IpAddressStr, OptStr)
