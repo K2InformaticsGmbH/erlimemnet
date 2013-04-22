@@ -13,8 +13,12 @@ Module Console
         For i = 1 To 10000
             strTest.Append("Schüpbach")
         Next
-        Dim l As ArrayList = mpro.putSourcePeer("smpp", "1234", "3017", strTest.ToString, "[]")
-        l = Nothing
+        Dim l1 As ArrayList = mpro.getSourcePeer("ucp", "80018") ' works
+        Dim l3 As ArrayList = mpro.putSourcePeer("smpp", "1234", "3017", strTest.ToString, "[]")
+        Dim l2 As ArrayList = mpro.getSourcePeer("smpp", "1234") ' fails
+        l1 = Nothing
+        l2 = Nothing
+        l3 = Nothing
         mpro = Nothing
     End Sub
 
