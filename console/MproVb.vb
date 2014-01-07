@@ -1,17 +1,17 @@
 ﻿Imports System.Net.Sockets
 Imports K2Informatics.Erlimemnet
 
-Public Class Mpro
+Public Class MproVb
     Inherits Imem
 
     Protected Sub New(ByRef _stream As NetworkStream)
         MyBase.New(_stream)
     End Sub
 
-    Public Overloads Shared Function Connect(ByVal host As String, ByVal port As Integer) As Mpro
+    Public Overloads Shared Function Connect(ByVal host As String, ByVal port As Integer) As MproVb
         Dim client = New TcpClient(host, port)
         Dim s = client.GetStream()
-        Return New Mpro(s)
+        Return New MproVb(s)
     End Function
 
     Public Function listDestinationChannels(ByVal AppId) As ArrayList
