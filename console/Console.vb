@@ -4,7 +4,8 @@ Imports K2Informatics.Erlimemnet
 Module Console
 
     Sub Main()
-        Dim mpro As Mpro = mpro.Connect("127.0.0.1", 8080)
+        ' Dim mpro As MproVb = MproVb.Connect("127.0.0.1", 8124, True)
+        Dim mpro As Mpro = mpro.Connect("127.0.0.1", 8124, True)
         mpro.Authenticate("admin", "change_on_install")
         mpro.Login()
         ' mpro.Logout()

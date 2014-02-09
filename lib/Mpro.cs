@@ -4,21 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Net.Sockets;
 using System.Collections;
+using K2Informatics.Erlnet;
 
 namespace K2Informatics.Erlimemnet
 {
     public class Mpro : Imem
     {
-        protected Mpro(NetworkStream _stream) :
-            base(_stream)
-        {
-        }
+        public Mpro(ErlStream _stream) : base(_stream) { }
 
-        public static new Mpro Connect(string host, int port)
+        public static Mpro Connect(ref string host, int port, bool secure)
         {
-            TcpClient client = new TcpClient(host, port);
-            NetworkStream s = client.GetStream();
-            return new Mpro(s);
+            return (Mpro)Imem.Connect(ref host, port, secure, typeof(Mpro));
         }
 
         public ArrayList listDestinationChannels(ref string AppId)

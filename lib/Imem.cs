@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using K2Informatics.Erlnet;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Collections;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
+
+using K2Informatics.Erlnet;
+using System.IO;
 
 namespace K2Informatics.Erlimemnet
 {
@@ -18,18 +22,36 @@ namespace K2Informatics.Erlimemnet
 
     public class Imem : Erlnet.Erlnet
     {
-        protected NetworkStream stream = null;
+        protected ErlStream stream = null;
         protected OtpErlangLong seco = new OtpErlangLong(0);
 
         // instanciate through Connect
-        protected Imem(NetworkStream _stream) { stream = _stream; }
+        protected Imem(ErlStream _stream) { stream = _stream; }
 
-        public static Imem Connect(string host, int port)
+        public static bool ValidateServerCertificate(
+              object sender,
+              X509Certificate certificate,
+              X509Chain chain,
+              SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
+        }
+
+        public static object Connect(ref string host, int port, bool secure, Type type)
         {
             TcpClient client = new TcpClient(host, port);
-            NetworkStream s = client.GetStream();
-
-            return new Imem(s);
+            if (secure)
+            {
+                NetworkStream s = client.GetStream();
+                SslStream ssl = new SslStream(s, false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
+                ssl.AuthenticateAsClient("");
+                return Activator.CreateInstance(type, new object[] { new ErlStream(ssl) });
+            }
+            else
+            {
+                NetworkStream ns = client.GetStream();
+                return Activator.CreateInstance(type, new object[] { new ErlStream(ns) });
+            }
         }
 
         public void Authenticate(string user, string password)
@@ -133,7 +155,7 @@ namespace K2Informatics.Erlimemnet
             return resObj;
         }
 
-        protected static new OtpErlangObject CallMFASync(NetworkStream stream,
+        protected static new OtpErlangObject CallMFASync(ErlStream stream,
             string module, string function, OtpErlangObject[] args)
         {
             OtpErlangObject resObj = Erlnet.Erlnet.CallMFASync(stream, module, function, args);
