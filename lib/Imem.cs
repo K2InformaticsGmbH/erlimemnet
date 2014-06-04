@@ -113,6 +113,25 @@ namespace K2Informatics.Erlimemnet
                 throw new ImemException("imem change_credentials failed");
         }
 
+        protected OtpErlangObject GetOtpErlangObject(object o)
+        {
+            if(o.GetType() == typeof(int)) return new OtpErlangInt((int)o);
+            if (o.GetType() == typeof(short)) return new OtpErlangShort((short)o);
+            if (o.GetType() == typeof(ushort)) return new OtpErlangUShort((short)o);
+            if (o.GetType() == typeof(uint)) return new OtpErlangUInt((int)o);
+            if (o.GetType() == typeof(long)) return new OtpErlangLong((long)o);
+            if (o.GetType() == typeof(float)) return new OtpErlangFloat((float)o);
+            if (o.GetType() == typeof(double)) return new OtpErlangDouble((double)o);
+            if (o.GetType() == typeof(char)) return new OtpErlangChar((char)o);
+            if (o.GetType() == typeof(byte)) return new OtpErlangByte((byte)o);
+            if (o.GetType() == typeof(bool)) return new OtpErlangBoolean((bool)o);
+            if (o.GetType() == typeof(byte[])) return new OtpErlangBitstr((byte[])o);
+            else return new OtpErlangString((string)o);
+        }
+
+        protected OtpErlangObject GetOtpErlangObject(int o) { return new OtpErlangInt(o); }
+        protected OtpErlangObject GetOtpErlangObject(long o) { return new OtpErlangLong(o); }
+
         protected OtpErlangObject CallImemMFASync(string mod, string fun, params object[] argsRest)
         {
             OtpErlangObject resObj = null;
@@ -125,7 +144,7 @@ namespace K2Informatics.Erlimemnet
 
                 innerMfaArgs[0] = seco;
                 for (int i = 1; i < innerMfaArgs.Length; ++i)
-                    innerMfaArgs[i] = new OtpErlangString((string)argsRest[i]);
+                    innerMfaArgs[i] = GetOtpErlangObject(argsRest[i]);
 
                 resObj = CallMFASync(stream, "imem_sec", fun, innerMfaArgs);
             }
@@ -135,7 +154,7 @@ namespace K2Informatics.Erlimemnet
                 OtpErlangObject[] innerMfaArgs = new OtpErlangObject[argsRest.Length];
 
                 for (int i = 0; i < innerMfaArgs.Length; ++i)
-                    innerMfaArgs[i] = new OtpErlangString((string)argsRest[i]);
+                    innerMfaArgs[i] = GetOtpErlangObject(argsRest[i]);
 
                 OtpErlangObject[] mfaArgs = new OtpErlangObject[4];
                 mfaArgs[0] = seco;
