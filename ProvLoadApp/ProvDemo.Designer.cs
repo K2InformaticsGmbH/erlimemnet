@@ -30,7 +30,9 @@
         {
             this.lastValue = new System.Windows.Forms.TextBox();
             this.keyList = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.testControls = new System.Windows.Forms.GroupBox();
+            this.tableChoose = new System.Windows.Forms.ComboBox();
             this.readCount = new System.Windows.Forms.Label();
             this.lastKey = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -53,7 +55,6 @@
             this.port = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
-            this.tableChoose = new System.Windows.Forms.ComboBox();
             this.testControls.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -73,7 +74,10 @@
             this.keyList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.keyList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
             this.keyList.FullRowSelect = true;
+            this.keyList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.keyList.LabelEdit = true;
             this.keyList.LabelWrap = false;
             this.keyList.Location = new System.Drawing.Point(597, 0);
@@ -81,8 +85,9 @@
             this.keyList.Size = new System.Drawing.Size(188, 614);
             this.keyList.TabIndex = 29;
             this.keyList.UseCompatibleStateImageBehavior = false;
-            this.keyList.View = System.Windows.Forms.View.List;
+            this.keyList.View = System.Windows.Forms.View.Details;
             this.keyList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.keyList_MouseDoubleClick);
+            this.keyList.Resize += new System.EventHandler(this.keyList_Resize);
             // 
             // testControls
             // 
@@ -104,6 +109,17 @@
             this.testControls.Size = new System.Drawing.Size(596, 97);
             this.testControls.TabIndex = 19;
             this.testControls.TabStop = false;
+            // 
+            // tableChoose
+            // 
+            this.tableChoose.FormattingEnabled = true;
+            this.tableChoose.Items.AddRange(new object[] {
+            "Channel",
+            "Audit"});
+            this.tableChoose.Location = new System.Drawing.Point(8, 14);
+            this.tableChoose.Name = "tableChoose";
+            this.tableChoose.Size = new System.Drawing.Size(87, 21);
+            this.tableChoose.TabIndex = 8;
             // 
             // readCount
             // 
@@ -309,17 +325,6 @@
             this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
             this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
             // 
-            // tableChoose
-            // 
-            this.tableChoose.FormattingEnabled = true;
-            this.tableChoose.Items.AddRange(new object[] {
-            "Channel",
-            "Audit"});
-            this.tableChoose.Location = new System.Drawing.Point(8, 14);
-            this.tableChoose.Name = "tableChoose";
-            this.tableChoose.Size = new System.Drawing.Size(87, 21);
-            this.tableChoose.TabIndex = 8;
-            // 
             // ProvDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -371,6 +376,7 @@
         private System.Windows.Forms.Label connStatus;
         private System.ComponentModel.BackgroundWorker backgroundWorker;
         private System.Windows.Forms.ComboBox tableChoose;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
     }
 }
 

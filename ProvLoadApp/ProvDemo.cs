@@ -66,6 +66,7 @@ namespace ProvLoadApp
             keyList.Enabled = false;
             stopBtn.Enabled = false;
             tableChoose.SelectedIndex = 0;
+            keyList.Columns[0].Width = keyList.Width - 10;
         }
 
         private void keyList_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -179,7 +180,7 @@ namespace ProvLoadApp
                 {
                     string[] kv = imeminf.readValueRandomKey(keys);
                     count++;
-                    if (delay > 0 || count % 10 == 0) worker.ReportProgress(0, kv);
+                    if (delay > 1000 || count % 10 == 0) worker.ReportProgress(0, kv);
                     if (delay > 0) Thread.Sleep(delay);
                 }
             }
@@ -196,6 +197,11 @@ namespace ProvLoadApp
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Debug.Print("Work Complete");
+        }
+
+        private void keyList_Resize(object sender, EventArgs e)
+        {
+            keyList.Columns[0].Width = keyList.Width - 10;
         }
     }
 }
