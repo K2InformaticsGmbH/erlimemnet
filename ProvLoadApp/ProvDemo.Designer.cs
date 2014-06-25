@@ -1,4 +1,4 @@
-﻿namespace WindowsFormsApplication1
+﻿namespace ProvLoadApp
 {
     partial class ProvDemo
     {
@@ -28,44 +28,45 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.lastValue = new System.Windows.Forms.TextBox();
             this.keyList = new System.Windows.Forms.ListView();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.testControls = new System.Windows.Forms.GroupBox();
+            this.readCount = new System.Windows.Forms.Label();
+            this.lastKey = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.fireDelayMs = new System.Windows.Forms.TextBox();
             this.Limit = new System.Windows.Forms.Label();
             this.LimitTxt = new System.Windows.Forms.TextBox();
             this.KeyPatternTxt = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.StopBtn = new System.Windows.Forms.Button();
-            this.KeyMatch = new System.Windows.Forms.TextBox();
-            this.StartBtn = new System.Windows.Forms.Button();
+            this.getKeys = new System.Windows.Forms.Button();
+            this.stopBtn = new System.Windows.Forms.Button();
+            this.Channel = new System.Windows.Forms.TextBox();
+            this.startBtn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.ip = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.port = new System.Windows.Forms.TextBox();
-            this.user = new System.Windows.Forms.TextBox();
-            this.password = new System.Windows.Forms.TextBox();
-            this.ssl = new System.Windows.Forms.CheckBox();
-            this.connectBtn = new System.Windows.Forms.Button();
             this.connStatus = new System.Windows.Forms.Label();
-            this.groupBox1.SuspendLayout();
+            this.connectBtn = new System.Windows.Forms.Button();
+            this.ssl = new System.Windows.Forms.CheckBox();
+            this.password = new System.Windows.Forms.TextBox();
+            this.user = new System.Windows.Forms.TextBox();
+            this.port = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.tableChoose = new System.Windows.Forms.ComboBox();
+            this.testControls.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // textBox4
+            // lastValue
             // 
-            this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.lastValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBox4.Location = new System.Drawing.Point(0, 123);
-            this.textBox4.Multiline = true;
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(591, 491);
-            this.textBox4.TabIndex = 9;
+            this.lastValue.Location = new System.Drawing.Point(0, 123);
+            this.lastValue.Multiline = true;
+            this.lastValue.Name = "lastValue";
+            this.lastValue.Size = new System.Drawing.Size(591, 491);
+            this.lastValue.TabIndex = 28;
             // 
             // keyList
             // 
@@ -77,57 +78,57 @@
             this.keyList.LabelWrap = false;
             this.keyList.Location = new System.Drawing.Point(597, 0);
             this.keyList.Name = "keyList";
-            this.keyList.Size = new System.Drawing.Size(169, 614);
-            this.keyList.TabIndex = 8;
+            this.keyList.Size = new System.Drawing.Size(188, 614);
+            this.keyList.TabIndex = 29;
             this.keyList.UseCompatibleStateImageBehavior = false;
             this.keyList.View = System.Windows.Forms.View.List;
             this.keyList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.keyList_MouseDoubleClick);
             // 
-            // groupBox1
+            // testControls
             // 
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.textBox2);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Controls.Add(this.Limit);
-            this.groupBox1.Controls.Add(this.LimitTxt);
-            this.groupBox1.Controls.Add(this.KeyPatternTxt);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.button1);
-            this.groupBox1.Controls.Add(this.StopBtn);
-            this.groupBox1.Controls.Add(this.KeyMatch);
-            this.groupBox1.Controls.Add(this.StartBtn);
-            this.groupBox1.Location = new System.Drawing.Point(0, 27);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(596, 97);
-            this.groupBox1.TabIndex = 19;
-            this.groupBox1.TabStop = false;
+            this.testControls.Controls.Add(this.tableChoose);
+            this.testControls.Controls.Add(this.readCount);
+            this.testControls.Controls.Add(this.lastKey);
+            this.testControls.Controls.Add(this.label2);
+            this.testControls.Controls.Add(this.label3);
+            this.testControls.Controls.Add(this.fireDelayMs);
+            this.testControls.Controls.Add(this.Limit);
+            this.testControls.Controls.Add(this.LimitTxt);
+            this.testControls.Controls.Add(this.KeyPatternTxt);
+            this.testControls.Controls.Add(this.getKeys);
+            this.testControls.Controls.Add(this.stopBtn);
+            this.testControls.Controls.Add(this.Channel);
+            this.testControls.Controls.Add(this.startBtn);
+            this.testControls.Location = new System.Drawing.Point(0, 27);
+            this.testControls.Name = "testControls";
+            this.testControls.Size = new System.Drawing.Size(596, 97);
+            this.testControls.TabIndex = 19;
+            this.testControls.TabStop = false;
             // 
-            // label5
+            // readCount
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(305, 54);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(62, 13);
-            this.label5.TabIndex = 31;
-            this.label5.Text = "Read so far";
+            this.readCount.AutoSize = true;
+            this.readCount.Location = new System.Drawing.Point(305, 54);
+            this.readCount.Name = "readCount";
+            this.readCount.Size = new System.Drawing.Size(62, 13);
+            this.readCount.TabIndex = 31;
+            this.readCount.Text = "Read so far";
             // 
-            // textBox2
+            // lastKey
             // 
-            this.textBox2.Location = new System.Drawing.Point(82, 70);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(509, 20);
-            this.textBox2.TabIndex = 27;
+            this.lastKey.Location = new System.Drawing.Point(60, 70);
+            this.lastKey.Name = "lastKey";
+            this.lastKey.Size = new System.Drawing.Size(531, 20);
+            this.lastKey.TabIndex = 27;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(5, 73);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(71, 13);
+            this.label2.Size = new System.Drawing.Size(49, 13);
             this.label2.TabIndex = 30;
-            this.label2.Text = "Last key read";
+            this.label2.Text = "Last item";
             // 
             // label3
             // 
@@ -138,19 +139,19 @@
             this.label3.TabIndex = 29;
             this.label3.Text = "ms between reads";
             // 
-            // textBox1
+            // fireDelayMs
             // 
-            this.textBox1.Location = new System.Drawing.Point(114, 41);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(37, 20);
-            this.textBox1.TabIndex = 24;
-            this.textBox1.Text = "0";
-            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.fireDelayMs.Location = new System.Drawing.Point(114, 41);
+            this.fireDelayMs.Name = "fireDelayMs";
+            this.fireDelayMs.Size = new System.Drawing.Size(37, 20);
+            this.fireDelayMs.TabIndex = 24;
+            this.fireDelayMs.Text = "0";
+            this.fireDelayMs.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // Limit
             // 
             this.Limit.AutoSize = true;
-            this.Limit.Location = new System.Drawing.Point(486, 15);
+            this.Limit.Location = new System.Drawing.Point(486, 18);
             this.Limit.Name = "Limit";
             this.Limit.Size = new System.Drawing.Size(36, 13);
             this.Limit.TabIndex = 28;
@@ -158,7 +159,7 @@
             // 
             // LimitTxt
             // 
-            this.LimitTxt.Location = new System.Drawing.Point(524, 13);
+            this.LimitTxt.Location = new System.Drawing.Point(524, 14);
             this.LimitTxt.Name = "LimitTxt";
             this.LimitTxt.Size = new System.Drawing.Size(64, 20);
             this.LimitTxt.TabIndex = 22;
@@ -166,58 +167,53 @@
             // 
             // KeyPatternTxt
             // 
-            this.KeyPatternTxt.Location = new System.Drawing.Point(308, 14);
+            this.KeyPatternTxt.Location = new System.Drawing.Point(350, 14);
             this.KeyPatternTxt.Name = "KeyPatternTxt";
-            this.KeyPatternTxt.Size = new System.Drawing.Size(172, 20);
+            this.KeyPatternTxt.Size = new System.Drawing.Size(130, 20);
             this.KeyPatternTxt.TabIndex = 21;
             this.KeyPatternTxt.Text = ".*";
             // 
-            // label1
+            // getKeys
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(5, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(46, 13);
-            this.label1.TabIndex = 26;
-            this.label1.Text = "Channel";
+            this.getKeys.Location = new System.Drawing.Point(173, 13);
+            this.getKeys.Name = "getKeys";
+            this.getKeys.Size = new System.Drawing.Size(173, 23);
+            this.getKeys.TabIndex = 20;
+            this.getKeys.Text = "Get sample keys for pattern";
+            this.getKeys.UseVisualStyleBackColor = true;
+            this.getKeys.Click += new System.EventHandler(this.getKeys_Click);
             // 
-            // button1
+            // stopBtn
             // 
-            this.button1.Location = new System.Drawing.Point(129, 14);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(173, 23);
-            this.button1.TabIndex = 20;
-            this.button1.Text = "Get sample keys for pattern";
-            this.button1.UseVisualStyleBackColor = true;
+            this.stopBtn.Location = new System.Drawing.Point(513, 38);
+            this.stopBtn.Name = "stopBtn";
+            this.stopBtn.Size = new System.Drawing.Size(75, 23);
+            this.stopBtn.TabIndex = 25;
+            this.stopBtn.Text = "Stop";
+            this.stopBtn.UseVisualStyleBackColor = true;
+            this.stopBtn.Click += new System.EventHandler(this.stopBtn_Click);
             // 
-            // StopBtn
+            // Channel
             // 
-            this.StopBtn.Location = new System.Drawing.Point(513, 38);
-            this.StopBtn.Name = "StopBtn";
-            this.StopBtn.Size = new System.Drawing.Size(75, 23);
-            this.StopBtn.TabIndex = 25;
-            this.StopBtn.Text = "Stop";
-            this.StopBtn.UseVisualStyleBackColor = true;
+            this.Channel.Location = new System.Drawing.Point(101, 14);
+            this.Channel.Name = "Channel";
+            this.Channel.Size = new System.Drawing.Size(66, 20);
+            this.Channel.TabIndex = 19;
+            this.Channel.Text = "MBSNT";
             // 
-            // KeyMatch
+            // startBtn
             // 
-            this.KeyMatch.Location = new System.Drawing.Point(57, 15);
-            this.KeyMatch.Name = "KeyMatch";
-            this.KeyMatch.Size = new System.Drawing.Size(66, 20);
-            this.KeyMatch.TabIndex = 19;
-            this.KeyMatch.Text = "MBSNT";
-            // 
-            // StartBtn
-            // 
-            this.StartBtn.Location = new System.Drawing.Point(8, 41);
-            this.StartBtn.Name = "StartBtn";
-            this.StartBtn.Size = new System.Drawing.Size(100, 23);
-            this.StartBtn.TabIndex = 23;
-            this.StartBtn.Text = "Start with delay of";
-            this.StartBtn.UseVisualStyleBackColor = true;
+            this.startBtn.Location = new System.Drawing.Point(8, 41);
+            this.startBtn.Name = "startBtn";
+            this.startBtn.Size = new System.Drawing.Size(100, 23);
+            this.startBtn.TabIndex = 23;
+            this.startBtn.Text = "Start with delay of";
+            this.startBtn.UseVisualStyleBackColor = true;
+            this.startBtn.Click += new System.EventHandler(this.startBtn_Click);
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.ip);
             this.groupBox2.Controls.Add(this.connStatus);
             this.groupBox2.Controls.Add(this.connectBtn);
             this.groupBox2.Controls.Add(this.ssl);
@@ -225,7 +221,6 @@
             this.groupBox2.Controls.Add(this.user);
             this.groupBox2.Controls.Add(this.port);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.ip);
             this.groupBox2.Location = new System.Drawing.Point(0, 0);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(596, 35);
@@ -241,39 +236,24 @@
             this.ip.TabIndex = 0;
             this.ip.Text = "127.0.0.1";
             // 
-            // label4
+            // connStatus
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(67, 16);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(10, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = ":";
+            this.connStatus.AutoSize = true;
+            this.connStatus.Location = new System.Drawing.Point(433, 15);
+            this.connStatus.Name = "connStatus";
+            this.connStatus.Size = new System.Drawing.Size(0, 13);
+            this.connStatus.TabIndex = 8;
+            this.connStatus.MouseClick += new System.Windows.Forms.MouseEventHandler(this.connStatus_MouseClick);
             // 
-            // port
+            // connectBtn
             // 
-            this.port.Location = new System.Drawing.Point(75, 13);
-            this.port.Name = "port";
-            this.port.Size = new System.Drawing.Size(39, 20);
-            this.port.TabIndex = 3;
-            this.port.Text = "8124";
-            // 
-            // user
-            // 
-            this.user.Location = new System.Drawing.Point(120, 13);
-            this.user.Name = "user";
-            this.user.Size = new System.Drawing.Size(94, 20);
-            this.user.TabIndex = 4;
-            this.user.Text = "admin";
-            // 
-            // password
-            // 
-            this.password.Location = new System.Drawing.Point(216, 13);
-            this.password.Name = "password";
-            this.password.PasswordChar = '*';
-            this.password.Size = new System.Drawing.Size(86, 20);
-            this.password.TabIndex = 5;
-            this.password.Text = "change_on_install";
+            this.connectBtn.Location = new System.Drawing.Point(350, 11);
+            this.connectBtn.Name = "connectBtn";
+            this.connectBtn.Size = new System.Drawing.Size(75, 23);
+            this.connectBtn.TabIndex = 7;
+            this.connectBtn.Text = "Connect";
+            this.connectBtn.UseVisualStyleBackColor = true;
+            this.connectBtn.Click += new System.EventHandler(this.connectBtn_Click);
             // 
             // ssl
             // 
@@ -287,40 +267,75 @@
             this.ssl.Text = "SSL";
             this.ssl.UseVisualStyleBackColor = true;
             // 
-            // connectBtn
+            // password
             // 
-            this.connectBtn.Location = new System.Drawing.Point(350, 11);
-            this.connectBtn.Name = "connectBtn";
-            this.connectBtn.Size = new System.Drawing.Size(75, 23);
-            this.connectBtn.TabIndex = 7;
-            this.connectBtn.Text = "Connect";
-            this.connectBtn.UseVisualStyleBackColor = true;
-            this.connectBtn.Click += new System.EventHandler(this.connectBtn_Click);
+            this.password.Location = new System.Drawing.Point(216, 13);
+            this.password.Name = "password";
+            this.password.PasswordChar = '*';
+            this.password.Size = new System.Drawing.Size(86, 20);
+            this.password.TabIndex = 5;
+            this.password.Text = "change_on_install";
             // 
-            // connStatus
+            // user
             // 
-            this.connStatus.AutoSize = true;
-            this.connStatus.Location = new System.Drawing.Point(433, 15);
-            this.connStatus.Name = "connStatus";
-            this.connStatus.Size = new System.Drawing.Size(0, 13);
-            this.connStatus.TabIndex = 8;
+            this.user.Location = new System.Drawing.Point(120, 13);
+            this.user.Name = "user";
+            this.user.Size = new System.Drawing.Size(94, 20);
+            this.user.TabIndex = 4;
+            this.user.Text = "admin";
+            // 
+            // port
+            // 
+            this.port.Location = new System.Drawing.Point(75, 13);
+            this.port.Name = "port";
+            this.port.Size = new System.Drawing.Size(39, 20);
+            this.port.TabIndex = 3;
+            this.port.Text = "8124";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(67, 16);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(10, 13);
+            this.label4.TabIndex = 2;
+            this.label4.Text = ":";
+            // 
+            // backgroundWorker
+            // 
+            this.backgroundWorker.WorkerReportsProgress = true;
+            this.backgroundWorker.WorkerSupportsCancellation = true;
+            this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
+            this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
+            this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
+            // 
+            // tableChoose
+            // 
+            this.tableChoose.FormattingEnabled = true;
+            this.tableChoose.Items.AddRange(new object[] {
+            "Channel",
+            "Audit"});
+            this.tableChoose.Location = new System.Drawing.Point(8, 14);
+            this.tableChoose.Name = "tableChoose";
+            this.tableChoose.Size = new System.Drawing.Size(87, 21);
+            this.tableChoose.TabIndex = 8;
             // 
             // ProvDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(766, 614);
+            this.ClientSize = new System.Drawing.Size(784, 614);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.testControls);
             this.Controls.Add(this.keyList);
-            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.lastValue);
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(100, 100);
+            this.MinimumSize = new System.Drawing.Size(800, 500);
             this.Name = "ProvDemo";
             this.Text = "Provisioning Demo";
             this.Load += new System.EventHandler(this.ProvDemo_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.testControls.ResumeLayout(false);
+            this.testControls.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -330,22 +345,21 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox lastValue;
         private System.Windows.Forms.ListView keyList;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.GroupBox testControls;
+        private System.Windows.Forms.Label readCount;
+        private System.Windows.Forms.TextBox lastKey;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox fireDelayMs;
         private System.Windows.Forms.Label Limit;
         private System.Windows.Forms.TextBox LimitTxt;
         private System.Windows.Forms.TextBox KeyPatternTxt;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button StopBtn;
-        private System.Windows.Forms.TextBox KeyMatch;
-        private System.Windows.Forms.Button StartBtn;
+        private System.Windows.Forms.Button getKeys;
+        private System.Windows.Forms.Button stopBtn;
+        private System.Windows.Forms.TextBox Channel;
+        private System.Windows.Forms.Button startBtn;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button connectBtn;
         private System.Windows.Forms.CheckBox ssl;
@@ -355,6 +369,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox ip;
         private System.Windows.Forms.Label connStatus;
+        private System.ComponentModel.BackgroundWorker backgroundWorker;
+        private System.Windows.Forms.ComboBox tableChoose;
     }
 }
 

@@ -5,11 +5,13 @@ using System.Text;
 using K2Informatics.Erlnet;
 using K2Informatics.Erlimemnet;
 using System.Collections;
+using System.Diagnostics;
 
-namespace WindowsFormsApplication1
+namespace ProvLoadApp
 {
     class ImemInterface : Imem
     {
+        private Random random = new Random();
         public ImemInterface(ErlStream _stream) : base(_stream) { }
 
         public static ImemInterface Connect(ref string host, int port, bool secure)
@@ -17,9 +19,28 @@ namespace WindowsFormsApplication1
             return (ImemInterface)Imem.Connect(ref host, port, secure, typeof(ImemInterface));
         }
 
+        private string chn = "";
+        public ArrayList read(string channel, string item, string key)
+        {
+            chn = channel;
+            return CallMFASync("read", channel, item, key);
+        }
+        public ArrayList readGT(string channel, string item, string key, string limit)
+        {
+            chn = channel;
+            return CallMFASync("readGT", channel, item, key, limit);
+        }
+
         private ArrayList CallMFASync(string fun, params object[] argsRest)
         {
             return TranslateResult(UnwrapResult(CallImemMFASync("imem_dal_skvh", fun, argsRest)));
+        }
+
+        public string[] readValueRandomKey(string[] keys)
+        {
+            string key = keys[random.Next(keys.Length)];
+            string value = (string)(read(chn, "value", key)[0]);
+            return new string[] { key, value };
         }
     }
 }
