@@ -23,6 +23,16 @@ namespace ProvLoadApp
             InitializeComponent();
         }
 
+        private void ProvDemo_Load(object sender, EventArgs e)
+        {
+            testControls.Enabled = false;
+            lastValue.Enabled = false;
+            keyList.Enabled = false;
+            stopBtn.Enabled = false;
+            tableChoose.SelectedIndex = 0;
+            keyList.Columns[0].Width = keyList.Width - 10;
+        }
+
         private void getKeys_Click(object sender, EventArgs e)
         {
             keyList.Items.Clear();
@@ -59,19 +69,9 @@ namespace ProvLoadApp
             }
         }
 
-        private void ProvDemo_Load(object sender, EventArgs e)
-        {
-            testControls.Enabled = false;
-            lastValue.Enabled = false;
-            keyList.Enabled = false;
-            stopBtn.Enabled = false;
-            tableChoose.SelectedIndex = 0;
-            keyList.Columns[0].Width = keyList.Width - 10;
-        }
-
         private void keyList_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (keyList.SelectedItems[0] == null)
+            if (keyList.SelectedItems.Count <= 0)
             {
                 ListViewItem item = keyList.Items.Add(String.Empty);
                 item.BeginEdit();
@@ -143,11 +143,11 @@ namespace ProvLoadApp
             stopBtn.Enabled = true;
             startBtn.Enabled = false;
             fireDelayMs.Enabled = false;
-            string[] keys = new string[keyList.Items.Count];
-            for (int i = 0; i < keyList.Items.Count; ++i)
-                keys[i] = keyList.Items[i].Text;
+            List<string> keys = new List<string>();
+            foreach (ListViewItem lvi in keyList.Items)
+                if (lvi.Text.Length > 0) keys.Add(lvi.Text);
 
-            backgroundWorker.RunWorkerAsync(new object[] { keys, int.Parse(fireDelayMs.Text) });
+            backgroundWorker.RunWorkerAsync(new object[] { keys.ToArray(), int.Parse(fireDelayMs.Text) });
         }
 
         private void stopBtn_Click(object sender, EventArgs e)
@@ -159,8 +159,8 @@ namespace ProvLoadApp
             fireDelayMs.Enabled = true;
         }
 
-
         private long count = 0;
+        private FixedSizedQueue<string[]> results = new FixedSizedQueue<string[]>(100);
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             string[] keys = (string[])(((object[])e.Argument)[0]);
@@ -180,7 +180,9 @@ namespace ProvLoadApp
                 {
                     string[] kv = imeminf.readValueRandomKey(keys);
                     count++;
-                    if (delay > 1000 || count % 10 == 0) worker.ReportProgress(0, kv);
+                    if (count % 100 == 0 || delay > 500)
+                        try { worker.ReportProgress(0, kv); }
+                        catch (Exception) { }
                     if (delay > 0) Thread.Sleep(delay);
                 }
             }
@@ -191,7 +193,7 @@ namespace ProvLoadApp
             string[] kv = (string[])e.UserState;
             readCount.Text = "Read so far " + count.ToString();
             lastKey.Text = kv[0];
-            lastValue.Text = kv[1];
+            try { lastValue.Rtf = Json.FormatJson(kv[1]); } catch (Exception) { }
         }
 
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -202,6 +204,12 @@ namespace ProvLoadApp
         private void keyList_Resize(object sender, EventArgs e)
         {
             keyList.Columns[0].Width = keyList.Width - 10;
+        }
+
+        private void keyList_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Clicks == 2)
+                keyList_MouseDoubleClick(sender, e);
         }
     }
 }

@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lastValue = new System.Windows.Forms.TextBox();
             this.keyList = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.testControls = new System.Windows.Forms.GroupBox();
@@ -55,38 +54,31 @@
             this.port = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.lastValue = new System.Windows.Forms.RichTextBox();
             this.testControls.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // lastValue
-            // 
-            this.lastValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.lastValue.Location = new System.Drawing.Point(0, 123);
-            this.lastValue.Multiline = true;
-            this.lastValue.Name = "lastValue";
-            this.lastValue.Size = new System.Drawing.Size(591, 491);
-            this.lastValue.TabIndex = 28;
             // 
             // keyList
             // 
             this.keyList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.keyList.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.keyList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
             this.keyList.FullRowSelect = true;
-            this.keyList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.keyList.LabelEdit = true;
             this.keyList.LabelWrap = false;
             this.keyList.Location = new System.Drawing.Point(597, 0);
+            this.keyList.MultiSelect = false;
             this.keyList.Name = "keyList";
             this.keyList.Size = new System.Drawing.Size(188, 614);
             this.keyList.TabIndex = 29;
             this.keyList.UseCompatibleStateImageBehavior = false;
             this.keyList.View = System.Windows.Forms.View.Details;
             this.keyList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.keyList_MouseDoubleClick);
+            this.keyList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.keyList_MouseDown);
             this.keyList.Resize += new System.EventHandler(this.keyList_Resize);
             // 
             // testControls
@@ -263,7 +255,7 @@
             // 
             // connectBtn
             // 
-            this.connectBtn.Location = new System.Drawing.Point(350, 11);
+            this.connectBtn.Location = new System.Drawing.Point(350, 10);
             this.connectBtn.Name = "connectBtn";
             this.connectBtn.Size = new System.Drawing.Size(75, 23);
             this.connectBtn.TabIndex = 7;
@@ -325,15 +317,28 @@
             this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
             this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
             // 
+            // lastValue
+            // 
+            this.lastValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lastValue.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lastValue.Location = new System.Drawing.Point(0, 123);
+            this.lastValue.Name = "lastValue";
+            this.lastValue.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
+            this.lastValue.Size = new System.Drawing.Size(596, 491);
+            this.lastValue.TabIndex = 30;
+            this.lastValue.Text = "";
+            this.lastValue.WordWrap = false;
+            // 
             // ProvDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 614);
+            this.Controls.Add(this.lastValue);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.testControls);
             this.Controls.Add(this.keyList);
-            this.Controls.Add(this.lastValue);
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(800, 500);
             this.Name = "ProvDemo";
@@ -344,13 +349,11 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TextBox lastValue;
         private System.Windows.Forms.ListView keyList;
         private System.Windows.Forms.GroupBox testControls;
         private System.Windows.Forms.Label readCount;
@@ -377,6 +380,7 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker;
         private System.Windows.Forms.ComboBox tableChoose;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.RichTextBox lastValue;
     }
 }
 
