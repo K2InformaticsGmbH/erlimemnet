@@ -134,6 +134,16 @@ namespace K2Informatics.Erlimemnet
 
         protected OtpErlangObject CallImemMFASync(string mod, string fun, params object[] argsRest)
         {
+            return CallImemProxyMFASync("admin_exec", mod, fun, argsRest);
+        }
+
+        protected OtpErlangObject CallImemDalMFASync(string mod, string fun, params object[] argsRest)
+        {
+            return CallImemProxyMFASync("dal_exec", mod, fun, argsRest);
+        }
+
+        private OtpErlangObject CallImemProxyMFASync(string proxy, string mod, string fun, params object[] argsRest)
+        {
             OtpErlangObject resObj = null;
 
             // if no module name is provided then
@@ -161,7 +171,7 @@ namespace K2Informatics.Erlimemnet
                 mfaArgs[1] = new OtpErlangAtom(mod);
                 mfaArgs[2] = new OtpErlangAtom(fun);
                 mfaArgs[3] = new OtpErlangList(innerMfaArgs);
-                resObj = CallMFASync(stream, "imem_sec", "admin_exec", mfaArgs);
+                resObj = CallMFASync(stream, "imem_sec", proxy, mfaArgs);
             }
 
             if (resObj is OtpErlangTuple

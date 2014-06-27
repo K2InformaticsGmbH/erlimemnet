@@ -17,7 +17,6 @@ namespace ProvLoadApp
     public partial class ProvDemo : Form
     {
         private ImemInterface imeminf = null;
-        private bool readAudit = false;
         public ProvDemo()
         {
             InitializeComponent();

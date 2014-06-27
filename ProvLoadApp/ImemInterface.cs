@@ -33,7 +33,7 @@ namespace ProvLoadApp
 
         private ArrayList CallMFASync(string fun, params object[] argsRest)
         {
-            return TranslateResult(UnwrapResult(CallImemMFASync("imem_dal_skvh", fun, argsRest)));
+            return TranslateResult(UnwrapResult(CallImemDalMFASync("imem_dal_skvh", fun, argsRest)));
         }
 
         public string[] readValueRandomKey(string[] keys)
