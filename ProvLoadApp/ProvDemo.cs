@@ -29,21 +29,14 @@ namespace ProvLoadApp
             lastValue.Enabled = false;
             keyList.Enabled = false;
             stopBtn.Enabled = false;
-            tableChoose.SelectedIndex = 0;
             keyList.Columns[0].Width = keyList.Width - 10;
+            connStatus.Text = "";
         }
 
         private void getKeys_Click(object sender, EventArgs e)
         {
             keyList.Items.Clear();
-            readAudit = tableChoose.SelectedIndex == 0 ? true : false;
-            if (readAudit)
-            {
-                ReadSkvhMFA(Channel.Text, "key", "-1.0e100", int.Parse(LimitTxt.Text), int.Parse(LimitTxt.Text), KeyPatternTxt.Text);
-            }
-            else // Audit Table access
-            {
-            }
+            ReadSkvhMFA(Channel.Text, "key", "-1.0e100", int.Parse(LimitTxt.Text), int.Parse(LimitTxt.Text), KeyPatternTxt.Text);
         }
 
         private void ReadSkvhMFA(string Channel, string Item, string CKey, int Limit, int More, string keymatchregex)
@@ -138,6 +131,7 @@ namespace ProvLoadApp
             MessageBox.Show(connStatus.Text);
         }
 
+        private DateTime startedat;
         private void startBtn_Click(object sender, EventArgs e)
         {
             stopBtn.Enabled = true;
@@ -148,6 +142,7 @@ namespace ProvLoadApp
                 if (lvi.Text.Length > 0) keys.Add(lvi.Text);
 
             backgroundWorker.RunWorkerAsync(new object[] { keys.ToArray(), int.Parse(fireDelayMs.Text) });
+            startedat = DateTime.Now;
         }
 
         private void stopBtn_Click(object sender, EventArgs e)
@@ -160,7 +155,6 @@ namespace ProvLoadApp
         }
 
         private long count = 0;
-        private FixedSizedQueue<string[]> results = new FixedSizedQueue<string[]>(100);
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             string[] keys = (string[])(((object[])e.Argument)[0]);
@@ -169,6 +163,7 @@ namespace ProvLoadApp
 
             count = 0;
             worker.ReportProgress(0, new string[] { "", "" });
+            DateTime start = DateTime.Now;
             while (true)
             {
                 if (worker.CancellationPending)
@@ -180,9 +175,12 @@ namespace ProvLoadApp
                 {
                     string[] kv = imeminf.readValueRandomKey(keys);
                     count++;
-                    if (count % 100 == 0 || delay > 500)
+                    if ((DateTime.Now - start).TotalMilliseconds > 500)
+                    {
+                        start = DateTime.Now;
                         try { worker.ReportProgress(0, kv); }
                         catch (Exception) { }
+                    }
                     if (delay > 0) Thread.Sleep(delay);
                 }
             }
@@ -191,9 +189,10 @@ namespace ProvLoadApp
         private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             string[] kv = (string[])e.UserState;
-            readCount.Text = "Read so far " + count.ToString();
+            double rate = count / (double)(DateTime.Now - startedat).Seconds;
+            readCount.Text = "Read so far " + count.ToString() + " @ " + rate.ToString("0.##/sec");
             lastKey.Text = kv[0];
-            try { lastValue.Rtf = Json.FormatJson(kv[1]); } catch (Exception) { }
+            lastValue.Text = kv[1];
         }
 
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -210,6 +209,28 @@ namespace ProvLoadApp
         {
             if (e.Clicks == 2)
                 keyList_MouseDoubleClick(sender, e);
+        }
+
+        private bool isRtf = false;
+        private void lastValue_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (!isRtf)
+            {
+                string origText = lastValue.Text;
+                lastValue.WordWrap = false;
+                lastValue.ScrollBars = RichTextBoxScrollBars.Both;
+                try { lastValue.Rtf = Json.FormatJson(origText); }
+                catch (Exception) { lastValue.Rtf = ""; lastValue.Text = origText; }
+            }
+            else
+            {
+                string origText = lastValue.Text;
+                lastValue.WordWrap = true;
+                lastValue.ScrollBars = RichTextBoxScrollBars.Vertical;
+                lastValue.Rtf = "";
+                lastValue.Text = origText;
+            }
+            isRtf = !isRtf;
         }
     }
 }

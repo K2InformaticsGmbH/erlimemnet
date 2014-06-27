@@ -49,7 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FixedSizedQueue.cs" />
     <Compile Include="ImemInterface.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="ProvDemo.cs">
