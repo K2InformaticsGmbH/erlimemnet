@@ -13,35 +13,35 @@ Public Class MproVb
         Return Imem.Connect(host, port, secure, GetType(MproVb))
     End Function
 
-    Public Function listDestinationChannels(ByVal AppId) As ArrayList
+    Public Function listDestinationChannels(ByVal AppId) As Object()
         Return CallMproMFASync("listDestinationChannels", AppId)
     End Function
-    Public Function deleteSourcePeer(ByRef AppId As String, ByRef Key As String) As ArrayList
+    Public Function deleteSourcePeer(ByRef AppId As String, ByRef Key As String) As Object()
         Return CallMproMFASync("deleteSourcePeer", AppId, Key)
     End Function
-    Public Function listSourcePeerKeys(ByRef AppId As String) As ArrayList
+    Public Function listSourcePeerKeys(ByRef AppId As String) As Object()
         Return CallMproMFASync("listSourcePeerKeys", AppId)
     End Function
-    Public Function listSourcePeers(ByRef AppId As String) As ArrayList
+    Public Function listSourcePeers(ByRef AppId As String) As Object()
         Return CallMproMFASync("listSourcePeers", AppId)
     End Function
-    Public Function putSourcePeer(ByRef AppId As String, ByRef Key As String, ByRef ChStr As String, ByRef SpName As String, ByRef OptStr As String) As ArrayList
+    Public Function putSourcePeer(ByRef AppId As String, ByRef Key As String, ByRef ChStr As String, ByRef SpName As String, ByRef OptStr As String) As Object()
         Return CallMproMFASync("putSourcePeer", AppId, Key, ChStr, SpName, OptStr)
     End Function
-    Public Function putWhitelist(ByRef AppId As String, ByRef Key As String, ByRef IpAddressStr As String, ByRef OptStr As String) As ArrayList
+    Public Function putWhitelist(ByRef AppId As String, ByRef Key As String, ByRef IpAddressStr As String, ByRef OptStr As String) As Object()
         Return CallMproMFASync("putWhitelist", AppId, Key, IpAddressStr, OptStr)
     End Function
-    Public Function deleteWhitelist(ByRef AppId As String, ByRef Key As String, ByRef IpAddressStr As String) As ArrayList
+    Public Function deleteWhitelist(ByRef AppId As String, ByRef Key As String, ByRef IpAddressStr As String) As Object()
         Return CallMproMFASync("deleteWhitelist", AppId, Key, IpAddressStr)
     End Function
-    Public Function getSourcePeer(ByRef AppId As String, ByRef Key As String) As ArrayList
+    Public Function getSourcePeer(ByRef AppId As String, ByRef Key As String) As Object()
         Return CallMproMFASync("getSourcePeer", AppId, Key)
     End Function
-    Public Function getWhitelist(ByRef AppId As String, ByRef Key As String) As ArrayList
+    Public Function getWhitelist(ByRef AppId As String, ByRef Key As String) As Object()
         Return CallMproMFASync("getWhitelist", AppId, Key)
     End Function
-    Private Function CallMproMFASync(ByVal fun As String, ByVal ParamArray argsRest() As Object) As ArrayList
-        Return TranslateResult(UnwrapResult(CallImemMFASync("mpro_dal_prov", fun, argsRest)))
+    Private Function CallMproMFASync(ByVal fun As String, ByVal ParamArray argsRest() As Object) As Object()
+        Return UnwrapResult(CallImemMFASync("mpro_dal_prov", fun, argsRest))
     End Function
 
 End Class

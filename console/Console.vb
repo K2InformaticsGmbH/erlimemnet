@@ -30,9 +30,9 @@ Module Console
         Next
         Debug.Print("Finished {0}", DateTime.Now())
 
-        Dim l1 As ArrayList = mpro.getSourcePeer("ucp", "4139") ' works
+        Dim l1 As Object() = mpro.getSourcePeer("ucp", "4139") ' works
         l1 = Nothing
-        Dim l3 As ArrayList = mpro.putSourcePeer("tpi", "", "4140", "Läderach", "[]")
+        Dim l3 As Object() = mpro.putSourcePeer("tpi", "", "4140", "Läderach", "[]")
         l3 = Nothing
         'Dim l2 As ArrayList = mpro.getSourcePeer("smpp", "1234") ' fails
         'l2 = Nothing

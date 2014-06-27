@@ -84,6 +84,9 @@
             // 
             // tabControl1
             // 
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Location = new System.Drawing.Point(0, 32);
@@ -248,12 +251,12 @@
             this.keyList.LabelEdit = true;
             this.keyList.LabelWrap = false;
             this.keyList.Location = new System.Drawing.Point(593, -3);
-            this.keyList.MultiSelect = false;
             this.keyList.Name = "keyList";
             this.keyList.Size = new System.Drawing.Size(188, 562);
             this.keyList.TabIndex = 32;
             this.keyList.UseCompatibleStateImageBehavior = false;
             this.keyList.View = System.Windows.Forms.View.Details;
+            this.keyList.KeyUp += new System.Windows.Forms.KeyEventHandler(this.keyList_KeyUp);
             this.keyList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.keyList_MouseDoubleClick);
             this.keyList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.keyList_MouseDown);
             this.keyList.Resize += new System.EventHandler(this.keyList_Resize);

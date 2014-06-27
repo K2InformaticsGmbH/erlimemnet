@@ -11,6 +11,7 @@ using System.Threading;
 using System.Collections;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using K2Informatics.Erlnet;
 
 namespace ProvLoadApp
 {
@@ -30,6 +31,21 @@ namespace ProvLoadApp
             stopBtn.Enabled = false;
             keyList.Columns[0].Width = keyList.Width - 10;
             connStatus.Text = "";
+
+            // Create the ToolTip and associate with the Form container.
+            ToolTip toolTip = new ToolTip();
+
+            // Set up the delays for the ToolTip.
+            toolTip.AutoPopDelay = 5000;
+            toolTip.InitialDelay = 1000;
+            toolTip.ReshowDelay = 500;
+            // Force the ToolTip text to be displayed whether or not the form is active.
+            toolTip.ShowAlways = true;
+
+            // Set up the ToolTip text for the Button and Checkbox.
+            toolTip.SetToolTip(connStatus, "Click to see error details");
+            toolTip.SetToolTip(lastValue, "DoubleClick to toggle between flat and pretty view");
+            toolTip.SetToolTip(keyList, "DoubleClick: Edit entry, Del : Delete, DoubleClick on empty line: Enter New");
         }
 
         private void getKeys_Click(object sender, EventArgs e)
@@ -44,18 +60,19 @@ namespace ProvLoadApp
             {
                 // Apply regex and collect untill 1000
                 Regex regex = new Regex(keymatchregex, RegexOptions.IgnoreCase);
-                ArrayList keys = imeminf.readGT(Channel, Item, CKey, More.ToString());
-                foreach (string key in keys)
+                object[] keys = imeminf.readGT(Channel, Item, CKey, More.ToString());
+                foreach (OtpErlangBinary key in keys)
                 {
-                    if (regex.Match(key).Success)
+                    string kstr = key.stringValue();
+                    if (regex.Match(kstr).Success)
                     {
-                        keyList.Items.Add(key);
+                        keyList.Items.Add(kstr);
                         Application.DoEvents();
                     }
                 }
-                if (keys.Count > 0 && More > 0 && keyList.Items.Count < More)
+                if (keys.Length > 0 && More > 0 && keyList.Items.Count < More)
                 {
-                    string lastKey = (string)keys[keys.Count - 1];
+                    string lastKey = ((OtpErlangBinary)keys[keys.Length - 1]).stringValue();
                     ReadSkvhMFA(Channel, Item, lastKey, Limit, Limit - keyList.Items.Count, keymatchregex);
                 }
             }
@@ -185,13 +202,15 @@ namespace ProvLoadApp
             }
         }
 
+        private string origText = "";
         private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             string[] kv = (string[])e.UserState;
             double rate = count / (double)(DateTime.Now - startedat).Seconds;
             readCount.Text = "Read so far " + count.ToString() + " @ " + rate.ToString("0.##/sec");
             lastKey.Text = kv[0];
-            lastValue.Text = kv[1];
+            origText = kv[1];
+            lastValue.Text = origText;
         }
 
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -215,7 +234,6 @@ namespace ProvLoadApp
         {
             if (!isRtf)
             {
-                string origText = lastValue.Text;
                 lastValue.WordWrap = false;
                 lastValue.ScrollBars = RichTextBoxScrollBars.Both;
                 try { lastValue.Rtf = Json.FormatJson(origText); }
@@ -223,13 +241,30 @@ namespace ProvLoadApp
             }
             else
             {
-                string origText = lastValue.Text;
                 lastValue.WordWrap = true;
                 lastValue.ScrollBars = RichTextBoxScrollBars.Vertical;
                 lastValue.Rtf = "";
                 lastValue.Text = origText;
             }
             isRtf = !isRtf;
+        }
+
+        private void keyList_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (keyList.SelectedItems.Count > 0 && e.KeyCode == Keys.Delete)
+            {
+                int count = keyList.SelectedItems.Count;
+                if (count == 1)
+                {
+                    var idx = keyList.SelectedItems[0].Index;
+                    keyList.SelectedIndices.Add(idx);
+                }
+
+                foreach (ListViewItem lvi in keyList.SelectedItems)
+                    keyList.Items.Remove(lvi);
+                if (keyList.Items.Count > 0 && count > 1)
+                        keyList.Items[0].Selected = true;
+            }
         }
     }
 }

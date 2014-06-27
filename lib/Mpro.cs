@@ -17,54 +17,54 @@ namespace K2Informatics.Erlimemnet
             return (Mpro)Imem.Connect(ref host, port, secure, typeof(Mpro));
         }
 
-        public ArrayList listDestinationChannels(ref string AppId)
+        public object[] listDestinationChannels(ref string AppId)
         {
             return CallMproMFASync("listDestinationChannels", AppId);
         }
 
-        public ArrayList deleteSourcePeer(ref string AppId, ref string Key)
+        public object[] deleteSourcePeer(ref string AppId, ref string Key)
         {
             return CallMproMFASync("deleteSourcePeer", AppId, Key);
         }
 
-        public ArrayList listSourcePeerKeys(ref string AppId)
+        public object[] listSourcePeerKeys(ref string AppId)
         {
             return CallMproMFASync("listSourcePeerKeys", AppId);
         }
 
-        public ArrayList listSourcePeers(ref string AppId)
+        public object[] listSourcePeers(ref string AppId)
         {
             return CallMproMFASync("listSourcePeers", AppId);
         }
 
-        public ArrayList putSourcePeer(ref string AppId, ref string Key, ref string ChStr, ref string SpName, ref string OptStr)
+        public object[] putSourcePeer(ref string AppId, ref string Key, ref string ChStr, ref string SpName, ref string OptStr)
         {
             return CallMproMFASync("putSourcePeer", AppId, Key, ChStr, SpName, OptStr);
         }
 
-        public ArrayList putWhitelist(ref string AppId, ref string Key, ref string IpAddressStr, ref string OptStr)
+        public object[] putWhitelist(ref string AppId, ref string Key, ref string IpAddressStr, ref string OptStr)
         {
             return CallMproMFASync("putWhitelist", AppId, Key, IpAddressStr, OptStr);
         }
 
-        public ArrayList deleteWhitelist(ref string AppId, ref string Key, ref string IpAddressStr)
+        public object[] deleteWhitelist(ref string AppId, ref string Key, ref string IpAddressStr)
         {
             return CallMproMFASync("deleteWhitelist", AppId, Key, IpAddressStr);
         }
 
-        public ArrayList getSourcePeer(ref string AppId, ref string Key)
+        public object[] getSourcePeer(ref string AppId, ref string Key)
         {
             return CallMproMFASync("getSourcePeer", AppId, Key);
         }
 
-        public ArrayList getWhitelist(ref string AppId, ref string Key)
+        public object[] getWhitelist(ref string AppId, ref string Key)
         {
             return CallMproMFASync("getWhitelist", AppId, Key);
         }
 
-        private ArrayList CallMproMFASync(string fun, params object[] argsRest)
+        private object[] CallMproMFASync(string fun, params object[] argsRest)
         {
-            return TranslateResult(UnwrapResult(CallImemMFASync("mpro_dal_prov", fun, argsRest)));
+            return UnwrapResult(CallImemMFASync("mpro_dal_prov", fun, argsRest));
         }
     }
 }

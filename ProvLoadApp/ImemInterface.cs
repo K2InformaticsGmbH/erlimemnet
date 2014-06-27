@@ -20,26 +20,26 @@ namespace ProvLoadApp
         }
 
         private string chn = "";
-        public ArrayList read(string channel, string item, string key)
+        public object[] read(string channel, string item, string key)
         {
             chn = channel;
             return CallMFASync("read", channel, item, key);
         }
-        public ArrayList readGT(string channel, string item, string key, string limit)
+        public object[] readGT(string channel, string item, string key, string limit)
         {
             chn = channel;
             return CallMFASync("readGT", channel, item, key, limit);
         }
 
-        private ArrayList CallMFASync(string fun, params object[] argsRest)
+        private object[] CallMFASync(string fun, params object[] argsRest)
         {
-            return TranslateResult(UnwrapResult(CallImemDalMFASync("imem_dal_skvh", fun, argsRest)));
+            return UnwrapResult(CallImemDalMFASync("imem_dal_skvh", fun, argsRest));
         }
 
         public string[] readValueRandomKey(string[] keys)
         {
             string key = keys[random.Next(keys.Length)];
-            string value = (string)(read(chn, "value", key)[0]);
+            string value = ((OtpErlangBinary)(read(chn, "value", key)[0])).stringValue();
             return new string[] { key, value };
         }
     }
