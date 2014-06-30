@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.bgChannelWorker = new System.ComponentModel.BackgroundWorker();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.lastValue = new System.Windows.Forms.RichTextBox();
@@ -48,17 +48,16 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.startTimeTxt = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.lastItemTxt = new System.Windows.Forms.RichTextBox();
+            this.auditDelayTxt = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.auditLimitTxt = new System.Windows.Forms.TextBox();
+            this.stopAuditRead = new System.Windows.Forms.Button();
+            this.startAuditRead = new System.Windows.Forms.Button();
             this.ip = new System.Windows.Forms.TextBox();
             this.connectBtn = new System.Windows.Forms.Button();
             this.ssl = new System.Windows.Forms.CheckBox();
@@ -68,19 +67,20 @@
             this.label4 = new System.Windows.Forms.Label();
             this.connStatus = new System.Windows.Forms.Label();
             this.Channel = new System.Windows.Forms.TextBox();
+            this.bgAuditWorker = new System.ComponentModel.BackgroundWorker();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.testControls.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // backgroundWorker
+            // bgChannelWorker
             // 
-            this.backgroundWorker.WorkerReportsProgress = true;
-            this.backgroundWorker.WorkerSupportsCancellation = true;
-            this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
-            this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
-            this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
+            this.bgChannelWorker.WorkerReportsProgress = true;
+            this.bgChannelWorker.WorkerSupportsCancellation = true;
+            this.bgChannelWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgChannelWorker_DoWork);
+            this.bgChannelWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgChannelWorker_ProgressChanged);
+            this.bgChannelWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgChannelWorker_RunWorkerCompleted);
             // 
             // tabControl1
             // 
@@ -264,17 +264,16 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.label8);
-            this.tabPage2.Controls.Add(this.textBox5);
+            this.tabPage2.Controls.Add(this.startTimeTxt);
             this.tabPage2.Controls.Add(this.label1);
-            this.tabPage2.Controls.Add(this.textBox1);
             this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Controls.Add(this.label6);
-            this.tabPage2.Controls.Add(this.richTextBox1);
-            this.tabPage2.Controls.Add(this.textBox2);
+            this.tabPage2.Controls.Add(this.lastItemTxt);
+            this.tabPage2.Controls.Add(this.auditDelayTxt);
             this.tabPage2.Controls.Add(this.label7);
-            this.tabPage2.Controls.Add(this.textBox3);
-            this.tabPage2.Controls.Add(this.button2);
-            this.tabPage2.Controls.Add(this.button3);
+            this.tabPage2.Controls.Add(this.auditLimitTxt);
+            this.tabPage2.Controls.Add(this.stopAuditRead);
+            this.tabPage2.Controls.Add(this.startAuditRead);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -292,34 +291,27 @@
             this.label8.TabIndex = 48;
             this.label8.Text = "with";
             // 
-            // textBox5
+            // startTimeTxt
             // 
-            this.textBox5.Location = new System.Drawing.Point(85, 6);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(117, 20);
-            this.textBox5.TabIndex = 47;
-            this.textBox5.Text = "01.01.1970 00:00:00";
+            this.startTimeTxt.Location = new System.Drawing.Point(85, 6);
+            this.startTimeTxt.Name = "startTimeTxt";
+            this.startTimeTxt.Size = new System.Drawing.Size(117, 20);
+            this.startTimeTxt.TabIndex = 47;
+            this.startTimeTxt.Text = "01.01.1970 00:00:00";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 32);
+            this.label1.Location = new System.Drawing.Point(529, 31);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(62, 13);
             this.label1.TabIndex = 45;
             this.label1.Text = "Read so far";
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(58, 47);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(531, 20);
-            this.textBox1.TabIndex = 41;
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 50);
+            this.label5.Location = new System.Drawing.Point(3, 31);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(49, 13);
             this.label5.TabIndex = 44;
@@ -334,27 +326,27 @@
             this.label6.TabIndex = 43;
             this.label6.Text = "ms between reads";
             // 
-            // richTextBox1
+            // lastItemTxt
             // 
-            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.lastItemTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.richTextBox1.Location = new System.Drawing.Point(2, 73);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
-            this.richTextBox1.Size = new System.Drawing.Size(774, 480);
-            this.richTextBox1.TabIndex = 46;
-            this.richTextBox1.Text = "";
-            this.richTextBox1.WordWrap = false;
+            this.lastItemTxt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lastItemTxt.Location = new System.Drawing.Point(2, 47);
+            this.lastItemTxt.Name = "lastItemTxt";
+            this.lastItemTxt.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
+            this.lastItemTxt.Size = new System.Drawing.Size(774, 506);
+            this.lastItemTxt.TabIndex = 46;
+            this.lastItemTxt.Text = "";
+            this.lastItemTxt.WordWrap = false;
             // 
-            // textBox2
+            // auditDelayTxt
             // 
-            this.textBox2.Location = new System.Drawing.Point(336, 6);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(37, 20);
-            this.textBox2.TabIndex = 39;
-            this.textBox2.Text = "0";
-            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.auditDelayTxt.Location = new System.Drawing.Point(336, 6);
+            this.auditDelayTxt.Name = "auditDelayTxt";
+            this.auditDelayTxt.Size = new System.Drawing.Size(37, 20);
+            this.auditDelayTxt.TabIndex = 39;
+            this.auditDelayTxt.Text = "0";
+            this.auditDelayTxt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label7
             // 
@@ -365,31 +357,32 @@
             this.label7.TabIndex = 42;
             this.label7.Text = "limit to";
             // 
-            // textBox3
+            // auditLimitTxt
             // 
-            this.textBox3.Location = new System.Drawing.Point(246, 5);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(64, 20);
-            this.textBox3.TabIndex = 37;
-            this.textBox3.Text = "1000";
+            this.auditLimitTxt.Location = new System.Drawing.Point(246, 5);
+            this.auditLimitTxt.Name = "auditLimitTxt";
+            this.auditLimitTxt.Size = new System.Drawing.Size(64, 20);
+            this.auditLimitTxt.TabIndex = 37;
+            this.auditLimitTxt.Text = "1000";
             // 
-            // button2
+            // stopAuditRead
             // 
-            this.button2.Location = new System.Drawing.Point(701, 0);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 40;
-            this.button2.Text = "Stop";
-            this.button2.UseVisualStyleBackColor = true;
+            this.stopAuditRead.Location = new System.Drawing.Point(701, 0);
+            this.stopAuditRead.Name = "stopAuditRead";
+            this.stopAuditRead.Size = new System.Drawing.Size(75, 23);
+            this.stopAuditRead.TabIndex = 40;
+            this.stopAuditRead.Text = "Stop";
+            this.stopAuditRead.UseVisualStyleBackColor = true;
             // 
-            // button3
+            // startAuditRead
             // 
-            this.button3.Location = new System.Drawing.Point(3, 3);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(76, 23);
-            this.button3.TabIndex = 38;
-            this.button3.Text = "Start after";
-            this.button3.UseVisualStyleBackColor = true;
+            this.startAuditRead.Location = new System.Drawing.Point(3, 3);
+            this.startAuditRead.Name = "startAuditRead";
+            this.startAuditRead.Size = new System.Drawing.Size(76, 23);
+            this.startAuditRead.TabIndex = 38;
+            this.startAuditRead.Text = "Start after";
+            this.startAuditRead.UseVisualStyleBackColor = true;
+            this.startAuditRead.Click += new System.EventHandler(this.startAuditRead_Click);
             // 
             // ip
             // 
@@ -473,6 +466,14 @@
             this.Channel.TabIndex = 30;
             this.Channel.Text = "MBSNT";
             // 
+            // bgAuditWorker
+            // 
+            this.bgAuditWorker.WorkerReportsProgress = true;
+            this.bgAuditWorker.WorkerSupportsCancellation = true;
+            this.bgAuditWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgAuditWorker_DoWork);
+            this.bgAuditWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgAuditWorker_ProgressChanged);
+            this.bgAuditWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgAuditWorker_RunWorkerCompleted);
+            // 
             // ProvDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -506,7 +507,7 @@
 
         #endregion
 
-        private System.ComponentModel.BackgroundWorker backgroundWorker;
+        private System.ComponentModel.BackgroundWorker bgChannelWorker;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.RichTextBox lastValue;
@@ -533,19 +534,19 @@
         private System.Windows.Forms.TextBox port;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label connStatus;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox startTimeTxt;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.RichTextBox lastItemTxt;
+        private System.Windows.Forms.TextBox auditDelayTxt;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.TextBox auditLimitTxt;
+        private System.Windows.Forms.Button stopAuditRead;
+        private System.Windows.Forms.Button startAuditRead;
         private System.Windows.Forms.TextBox Channel;
         private System.Windows.Forms.Label label8;
+        private System.ComponentModel.BackgroundWorker bgAuditWorker;
     }
 }
 

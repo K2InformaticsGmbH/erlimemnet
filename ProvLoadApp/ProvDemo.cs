@@ -45,7 +45,7 @@ namespace ProvLoadApp
             // Set up the ToolTip text for the Button and Checkbox.
             toolTip.SetToolTip(connStatus, "Click to see error details");
             toolTip.SetToolTip(lastValue, "DoubleClick to toggle between flat and pretty view");
-            toolTip.SetToolTip(keyList, "DoubleClick: Edit entry, Del : Delete, DoubleClick on empty line: Enter New");
+            toolTip.SetToolTip(keyList, "DoubleClick: Edit entry, Del: Delete, DoubleClick on empty line: Enter New");
         }
 
         private void getKeys_Click(object sender, EventArgs e)
@@ -157,13 +157,13 @@ namespace ProvLoadApp
             foreach (ListViewItem lvi in keyList.Items)
                 if (lvi.Text.Length > 0) keys.Add(lvi.Text);
 
-            backgroundWorker.RunWorkerAsync(new object[] { keys.ToArray(), int.Parse(fireDelayMs.Text) });
+            bgChannelWorker.RunWorkerAsync(new object[] { keys.ToArray(), int.Parse(fireDelayMs.Text) });
             startedat = DateTime.Now;
         }
 
         private void stopBtn_Click(object sender, EventArgs e)
         {
-            backgroundWorker.CancelAsync();
+            bgChannelWorker.CancelAsync();
 
             startBtn.Enabled = true;
             stopBtn.Enabled = false;
@@ -171,7 +171,7 @@ namespace ProvLoadApp
         }
 
         private long count = 0;
-        private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void bgChannelWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             string[] keys = (string[])(((object[])e.Argument)[0]);
             int delay = (int)(((object[])e.Argument)[1]);
@@ -203,7 +203,7 @@ namespace ProvLoadApp
         }
 
         private string origText = "";
-        private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void bgChannelWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             string[] kv = (string[])e.UserState;
             double rate = count / (double)(DateTime.Now - startedat).Seconds;
@@ -213,7 +213,7 @@ namespace ProvLoadApp
             lastValue.Text = origText;
         }
 
-        private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgChannelWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Debug.Print("Work Complete");
         }
@@ -265,6 +265,31 @@ namespace ProvLoadApp
                 if (keyList.Items.Count > 0 && count > 1)
                         keyList.Items[0].Selected = true;
             }
+        }
+
+        private void startAuditRead_Click(object sender, EventArgs e)
+        {
+            bgAuditWorker.RunWorkerAsync(new object[] { Channel.Text, startTimeTxt.Text, auditLimitTxt.Text, int.Parse()                       });
+            startedat = DateTime.Now;
+        }
+
+        private void bgAuditWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            object[] res = imeminf.audit_readGT(Channel.Text, "tkvuquadruple", startTimeTxt.Text, auditLimitTxt.Text);
+            foreach (OtpErlangBinary item in res)
+            {
+                lastItemTxt.Text = item.stringValue();
+            }
+        }
+
+        private void bgAuditWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
+        private void bgAuditWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+
         }
     }
 }

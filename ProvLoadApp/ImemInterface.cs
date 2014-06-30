@@ -30,6 +30,10 @@ namespace ProvLoadApp
             chn = channel;
             return CallMFASync("readGT", channel, item, key, limit);
         }
+        public object[] audit_readGT(string channel, string item, string key, string limit)
+        {
+            return CallMFASync("audit_readGT", channel, item, key, limit);
+        }
 
         private object[] CallMFASync(string fun, params object[] argsRest)
         {
