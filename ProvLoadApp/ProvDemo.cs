@@ -18,6 +18,7 @@ namespace ProvLoadApp
     public partial class ProvDemo : Form
     {
         private ImemInterface imeminf = null;
+        private const String imemintflock = "imemintflock";
         public ProvDemo()
         {
             InitializeComponent();
@@ -51,6 +52,7 @@ namespace ProvLoadApp
         private void getKeys_Click(object sender, EventArgs e)
         {
             keyList.Items.Clear();
+            keysCount.Text = "Keys : ";
             bgKeyLoadWorker.RunWorkerAsync(new object[] { Channel.Text, "key", "-1.0e100", int.Parse(LimitTxt.Text), KeyPatternTxt.Text });
             getKeys.Enabled = false;
         }
@@ -87,7 +89,7 @@ namespace ProvLoadApp
                 try
                 {
                     imeminf = ImemInterface.Connect(ref ipStr, int.Parse(port.Text), ssl.Checked);
-                    lock (imeminf)
+                    lock (imemintflock)
                     {
                         imeminf.Authenticate(user.Text, password.Text);
                         imeminf.Login();
@@ -110,7 +112,7 @@ namespace ProvLoadApp
             }
             else // Handle Disconnect
             {
-                imeminf = null;
+                lock (imemintflock) { imeminf = null; }
                 connectBtn.Text = "Connect";
                 ip.Enabled = true;
                 port.Enabled = true;
@@ -171,15 +173,23 @@ namespace ProvLoadApp
                 else
                 {
                     string[] kv;
-                    lock (imeminf) { kv = imeminf.readValueRandomKey(keys); }
-                    count++;
-                    if ((DateTime.Now - start).TotalMilliseconds > 500)
+                    try
                     {
-                        start = DateTime.Now;
-                        try { worker.ReportProgress(0, kv); }
-                        catch (Exception) { }
+                        lock (imemintflock) { if (imeminf == null) break; kv = imeminf.readValueRandomKey(keys); }
+                        count++;
+                        if ((DateTime.Now - start).TotalMilliseconds > 500)
+                        {
+                            start = DateTime.Now;
+                            try { worker.ReportProgress(0, kv); }
+                            catch (Exception) { }
+                        }
+                        if (delay > 0) Thread.Sleep(delay);
                     }
-                    if (delay > 0) Thread.Sleep(delay);
+                    catch (Exception ex)
+                    {
+                        worker.ReportProgress(0, ex);
+                        break;
+                    }
                 }
             }
         }
@@ -187,12 +197,19 @@ namespace ProvLoadApp
         private string origText = "";
         private void bgChannelWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            string[] kv = (string[])e.UserState;
-            double rate = count / (double)(DateTime.Now - startedat).TotalSeconds;
-            readCount.Text = "Read so far " + count.ToString() + " @ " + rate.ToString("0.##/sec");
-            lastKey.Text = kv[0];
-            origText = kv[1];
-            lastValue.Text = origText;
+            if (e.UserState is Exception)
+            {
+                MessageBox.Show(((Exception)e.UserState).Message + "\n" + ((Exception)e.UserState).StackTrace);
+            }
+            else
+            {
+                string[] kv = (string[])e.UserState;
+                double rate = count / (double)(DateTime.Now - startedat).TotalSeconds;
+                readCount.Text = "Read so far " + count.ToString() + " @ " + rate.ToString("0.##/sec");
+                lastKey.Text = kv[0];
+                origText = kv[1];
+                lastValue.Text = origText;
+            }
         }
 
         private void keyList_Resize(object sender, EventArgs e)
@@ -266,7 +283,8 @@ namespace ProvLoadApp
             BackgroundWorker worker = sender as BackgroundWorker;
             worker.ReportProgress(0, "");
 
-            while(true) {
+            while (true)
+            {
                 if (worker.CancellationPending)
                 {
                     e.Cancel = true;
@@ -275,31 +293,46 @@ namespace ProvLoadApp
                 else
                 {
                     object[] res;
-                    lock (imeminf) { res = imeminf.audit_readGT(channel, "tkvuquadruple", startTime, limit); }
-                    auditcount += res.Length;
-                    foreach (OtpErlangBinary item in res)
+                    try
                     {
-                        auditcount++;
-                        if (((DateTime.Now - start).TotalMilliseconds > 500 || auditcount % 100 == 0) && res.Length > 0)
+                        lock (imemintflock) { if (imeminf == null) break; res = imeminf.audit_readGT(channel, "tkvuquadruple", startTime, limit); }
+                        auditcount += res.Length;
+                        foreach (OtpErlangBinary item in res)
                         {
-                            start = DateTime.Now;
-                            try { worker.ReportProgress(0, item.stringValue()); }
-                            catch (Exception) { }
+                            auditcount++;
+                            if (((DateTime.Now - start).TotalMilliseconds > 500 || auditcount % 100 == 0) && res.Length > 0)
+                            {
+                                start = DateTime.Now;
+                                try { worker.ReportProgress(0, item.stringValue()); }
+                                catch (Exception) { }
+                            }
                         }
+                        if (res.Length > 0)
+                            startTime = ((OtpErlangBinary)res[res.Length - 1]).stringValue().Split(new char[] { '\t' })[0];
+                        if (delay > 0) Thread.Sleep(delay);
                     }
-                    if (res.Length > 0)
-                        startTime = ((OtpErlangBinary)res[res.Length - 1]).stringValue().Split(new char[] { '\t' })[0];
-                    if (delay > 0) Thread.Sleep(delay);
+                    catch (Exception ex)
+                    {
+                        worker.ReportProgress(0, ex);
+                        break;
+                    }
                 }
             }
         }
 
         private void bgAuditWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            string audit = (string)e.UserState;
-            double rate = auditcount / (double)(DateTime.Now - auditstartedat).TotalSeconds;
-            auditReadCount.Text = "Read so far " + auditcount.ToString() + " @ " + rate.ToString("0.##/sec");
-            lastItemTxt.Text = string.Join("\r\n----\r\n", audit.Split(new char[] { '\t' }));
+            if (e.UserState is Exception)
+            {
+                MessageBox.Show(((Exception)e.UserState).Message + "\n" + ((Exception)e.UserState).StackTrace);
+            }
+            else
+            {
+                string audit = (string)e.UserState;
+                double rate = auditcount / (double)(DateTime.Now - auditstartedat).TotalSeconds;
+                auditReadCount.Text = "Read so far " + auditcount.ToString() + " @ " + rate.ToString("0.##/sec");
+                lastItemTxt.Text = string.Join("\r\n----\r\n", audit.Split(new char[] { '\t' }));
+            }
         }
 
         private void stopAuditRead_Click(object sender, EventArgs e)
@@ -325,48 +358,66 @@ namespace ProvLoadApp
                 // Apply regex and collect untill 1000
                 Regex regex = new Regex(keymatchregex, RegexOptions.IgnoreCase);
                 object[] keys;
-                lock (imeminf)
+                try
                 {
-                    keys = imeminf.readGT(Channel, Item, CKey, More.ToString());
-                }
-                foreach (OtpErlangBinary key in keys)
-                {
-                    string kstr = key.stringValue();
-                    if (regex.Match(kstr).Success)
+                    lock (imemintflock) { if (imeminf == null) break; keys = imeminf.readGT(Channel, Item, CKey, More.ToString()); }
+                    foreach (OtpErlangBinary key in keys)
                     {
-                        lock (keysQ) { keysQ.Enqueue(kstr); }
+                        string kstr = key.stringValue();
+                        if (regex.Match(kstr).Success)
+                        {
+                            lock (keysQ) { keysQ.Enqueue(kstr); }
+                        }
+                    }
+                    if (keys.Length > 0 && More > 0 && keysQ.Count < Limit)
+                    {
+                        string lastKey = ((OtpErlangBinary)keys[keys.Length - 1]).stringValue();
+                        CKey = lastKey;
+                        More = Limit - keysQ.Count;
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
-                if (keys.Length > 0 && More > 0 && keysQ.Count < Limit)
+                catch (Exception ex)
                 {
-                    string lastKey = ((OtpErlangBinary)keys[keys.Length - 1]).stringValue();
-                    CKey = lastKey;
-                    More = Limit - keysQ.Count;
-                }
-                else
-                {
+                    worker.ReportProgress(0, ex);
                     break;
                 }
                 if ((DateTime.Now - start).TotalMilliseconds > 500 || keysQ.Count > 500)
                 {
                     start = DateTime.Now;
-                    try { worker.ReportProgress(0, ""); }
+                    try { worker.ReportProgress(0, "update"); }
                     catch (Exception) { }
                 }
             }
-            try { worker.ReportProgress(0, ""); }
+            try { worker.ReportProgress(0, "complete"); }
             catch (Exception) { }
         }
 
         private void bgKeyLoadWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            while (keysQ.Count > 0)
+            if (e.UserState is Exception)
             {
-                lock (keysQ) { keyList.Items.Add((string)keysQ.Dequeue()); }
-                if (keyList.Items.Count % 100 == 0)
+                MessageBox.Show(((Exception)e.UserState).Message + "\n" + ((Exception)e.UserState).StackTrace);
+            }
+            else
+            {
+                while (keysQ.Count > 0)
+                {
+                    lock (keysQ) { keyList.Items.Add((string)keysQ.Dequeue()); }
+                    if (keyList.Items.Count % 1000 == 0)
+                    {
+                        keyList.Items[keyList.Items.Count - 1].EnsureVisible();
+                        keysCount.Text = "Keys : " + keyList.Items.Count;
+                        Application.DoEvents();
+                    }
+                }
+                if (e.UserState is string && ((string)e.UserState) == "complete")
                 {
                     keyList.Items[keyList.Items.Count - 1].EnsureVisible();
-                    Application.DoEvents();
+                    keysCount.Text = "Keys : " + keyList.Items.Count;
                 }
             }
         }
@@ -374,6 +425,30 @@ namespace ProvLoadApp
         private void bgKeyLoadWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             getKeys.Enabled = true;
+        }
+
+        private void bgAuditWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            startAuditRead.Enabled = true;
+        }
+
+        private void keyList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == (Keys.A | Keys.Control))
+            {
+                foreach (ListViewItem item in keyList.Items)
+                    item.Selected = true;
+            }
+            else if (e.KeyData == (Keys.C | Keys.Control))
+            {
+                StringBuilder sb = new StringBuilder(); 
+                foreach (ListViewItem item in keyList.SelectedItems)
+                {
+                    sb.Append(item.Text);
+                    sb.Append("\r\n");
+                }
+                Clipboard.SetText(sb.ToString());
+            }
         }
     }
 }

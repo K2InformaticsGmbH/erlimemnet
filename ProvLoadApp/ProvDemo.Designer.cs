@@ -45,7 +45,7 @@
             this.stopBtn = new System.Windows.Forms.Button();
             this.startBtn = new System.Windows.Forms.Button();
             this.keyList = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
             this.startTimeTxt = new System.Windows.Forms.TextBox();
@@ -69,6 +69,7 @@
             this.Channel = new System.Windows.Forms.TextBox();
             this.bgAuditWorker = new System.ComponentModel.BackgroundWorker();
             this.bgKeyLoadWorker = new System.ComponentModel.BackgroundWorker();
+            this.keysCount = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.testControls.SuspendLayout();
@@ -124,6 +125,7 @@
             // 
             // testControls
             // 
+            this.testControls.Controls.Add(this.keysCount);
             this.testControls.Controls.Add(this.readCount);
             this.testControls.Controls.Add(this.lastKey);
             this.testControls.Controls.Add(this.label2);
@@ -246,7 +248,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.keyList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.keyList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
+            this.columnHeader});
             this.keyList.FullRowSelect = true;
             this.keyList.LabelEdit = true;
             this.keyList.LabelWrap = false;
@@ -256,6 +258,7 @@
             this.keyList.TabIndex = 32;
             this.keyList.UseCompatibleStateImageBehavior = false;
             this.keyList.View = System.Windows.Forms.View.Details;
+            this.keyList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyList_KeyDown);
             this.keyList.KeyUp += new System.Windows.Forms.KeyEventHandler(this.keyList_KeyUp);
             this.keyList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.keyList_MouseDoubleClick);
             this.keyList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.keyList_MouseDown);
@@ -476,6 +479,7 @@
             this.bgAuditWorker.WorkerSupportsCancellation = true;
             this.bgAuditWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgAuditWorker_DoWork);
             this.bgAuditWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgAuditWorker_ProgressChanged);
+            this.bgAuditWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgAuditWorker_RunWorkerCompleted);
             // 
             // bgKeyLoadWorker
             // 
@@ -484,6 +488,15 @@
             this.bgKeyLoadWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgKeyLoadWorker_DoWork);
             this.bgKeyLoadWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgKeyLoadWorker_ProgressChanged);
             this.bgKeyLoadWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgKeyLoadWorker_RunWorkerCompleted);
+            // 
+            // keysCount
+            // 
+            this.keysCount.AutoSize = true;
+            this.keysCount.Location = new System.Drawing.Point(431, 14);
+            this.keysCount.Name = "keysCount";
+            this.keysCount.Size = new System.Drawing.Size(36, 13);
+            this.keysCount.TabIndex = 32;
+            this.keysCount.Text = "Keys :";
             // 
             // ProvDemo
             // 
@@ -535,7 +548,7 @@
         private System.Windows.Forms.Button stopBtn;
         private System.Windows.Forms.Button startBtn;
         private System.Windows.Forms.ListView keyList;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TextBox ip;
         private System.Windows.Forms.Button connectBtn;
@@ -559,6 +572,7 @@
         private System.Windows.Forms.Label label8;
         private System.ComponentModel.BackgroundWorker bgAuditWorker;
         private System.ComponentModel.BackgroundWorker bgKeyLoadWorker;
+        private System.Windows.Forms.Label keysCount;
     }
 }
 
