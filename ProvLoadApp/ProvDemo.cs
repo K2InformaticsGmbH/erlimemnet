@@ -206,7 +206,7 @@ namespace ProvLoadApp
         private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             string[] kv = (string[])e.UserState;
-            double rate = count / (double)(DateTime.Now - startedat).Seconds;
+            double rate = count / (double)(DateTime.Now - startedat).TotalSeconds;
             readCount.Text = "Read so far " + count.ToString() + " @ " + rate.ToString("0.##/sec");
             lastKey.Text = kv[0];
             origText = kv[1];
