@@ -41,7 +41,7 @@ Public Class MproVb
         Return CallMproMFASync("getWhitelist", AppId, Key)
     End Function
     Private Function CallMproMFASync(ByVal fun As String, ByVal ParamArray argsRest() As Object) As Object()
-        Return UnwrapResult(CallImemMFASync("mpro_dal_prov", fun, argsRest))
+        Return UnwrapResult(CallImemDalMFASync("mpro_dal_prov", fun, argsRest))
     End Function
 
 End Class
