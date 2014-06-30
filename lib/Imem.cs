@@ -13,6 +13,11 @@ using System.IO;
 
 namespace K2Informatics.Erlimemnet
 {
+    public enum ErlType
+    {
+        EString = 1
+    };
+
     public class ImemException : Exception
     {
         public ImemException() { }
