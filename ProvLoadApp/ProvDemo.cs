@@ -51,33 +51,10 @@ namespace ProvLoadApp
         private void getKeys_Click(object sender, EventArgs e)
         {
             keyList.Items.Clear();
-            ReadSkvhMFA(Channel.Text, "key", "-1.0e100", int.Parse(LimitTxt.Text), int.Parse(LimitTxt.Text), KeyPatternTxt.Text);
+            bgKeyLoadWorker.RunWorkerAsync(new object[] { Channel.Text, "key", "-1.0e100", int.Parse(LimitTxt.Text), KeyPatternTxt.Text });
+            getKeys.Enabled = false;
         }
-
-        private void ReadSkvhMFA(string Channel, string Item, string CKey, int Limit, int More, string keymatchregex)
-        {
-            if (More > 0)
-            {
-                // Apply regex and collect untill 1000
-                Regex regex = new Regex(keymatchregex, RegexOptions.IgnoreCase);
-                object[] keys = imeminf.readGT(Channel, Item, CKey, More.ToString());
-                foreach (OtpErlangBinary key in keys)
-                {
-                    string kstr = key.stringValue();
-                    if (regex.Match(kstr).Success)
-                    {
-                        keyList.Items.Add(kstr);
-                        Application.DoEvents();
-                    }
-                }
-                if (keys.Length > 0 && More > 0 && keyList.Items.Count < More)
-                {
-                    string lastKey = ((OtpErlangBinary)keys[keys.Length - 1]).stringValue();
-                    ReadSkvhMFA(Channel, Item, lastKey, Limit, Limit - keyList.Items.Count, keymatchregex);
-                }
-            }
-        }
-
+        
         private void keyList_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (keyList.SelectedItems.Count <= 0)
@@ -110,8 +87,11 @@ namespace ProvLoadApp
                 try
                 {
                     imeminf = ImemInterface.Connect(ref ipStr, int.Parse(port.Text), ssl.Checked);
-                    imeminf.Authenticate(user.Text, password.Text);
-                    imeminf.Login();
+                    lock (imeminf)
+                    {
+                        imeminf.Authenticate(user.Text, password.Text);
+                        imeminf.Login();
+                    }
                     connStatus.ForeColor = Color.Green;
                     connStatus.Text = "Connected";
                     connectBtn.Text = "Disconnect";
@@ -158,7 +138,6 @@ namespace ProvLoadApp
                 if (lvi.Text.Length > 0) keys.Add(lvi.Text);
 
             bgChannelWorker.RunWorkerAsync(new object[] { keys.ToArray(), int.Parse(fireDelayMs.Text) });
-            startedat = DateTime.Now;
         }
 
         private void stopBtn_Click(object sender, EventArgs e)
@@ -168,6 +147,7 @@ namespace ProvLoadApp
             startBtn.Enabled = true;
             stopBtn.Enabled = false;
             fireDelayMs.Enabled = true;
+            count = 0;
         }
 
         private long count = 0;
@@ -178,6 +158,7 @@ namespace ProvLoadApp
             BackgroundWorker worker = sender as BackgroundWorker;
 
             count = 0;
+            startedat = DateTime.Now;
             worker.ReportProgress(0, new string[] { "", "" });
             DateTime start = DateTime.Now;
             while (true)
@@ -189,7 +170,8 @@ namespace ProvLoadApp
                 }
                 else
                 {
-                    string[] kv = imeminf.readValueRandomKey(keys);
+                    string[] kv;
+                    lock (imeminf) { kv = imeminf.readValueRandomKey(keys); }
                     count++;
                     if ((DateTime.Now - start).TotalMilliseconds > 500)
                     {
@@ -211,11 +193,6 @@ namespace ProvLoadApp
             lastKey.Text = kv[0];
             origText = kv[1];
             lastValue.Text = origText;
-        }
-
-        private void bgChannelWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            Debug.Print("Work Complete");
         }
 
         private void keyList_Resize(object sender, EventArgs e)
@@ -263,33 +240,140 @@ namespace ProvLoadApp
                 foreach (ListViewItem lvi in keyList.SelectedItems)
                     keyList.Items.Remove(lvi);
                 if (keyList.Items.Count > 0 && count > 1)
-                        keyList.Items[0].Selected = true;
+                    keyList.Items[0].Selected = true;
             }
         }
 
         private void startAuditRead_Click(object sender, EventArgs e)
         {
-            bgAuditWorker.RunWorkerAsync(new object[] { Channel.Text, startTimeTxt.Text, auditLimitTxt.Text, int.Parse()                       });
+            bgAuditWorker.RunWorkerAsync(new object[] { Channel.Text, startTimeTxt.Text, auditLimitTxt.Text, int.Parse(auditDelayTxt.Text) });
             startedat = DateTime.Now;
+            startAuditRead.Enabled = false;
+            stopAuditRead.Enabled = true;
         }
 
+        private long auditcount = 0;
+        private DateTime auditstartedat;
         private void bgAuditWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            object[] res = imeminf.audit_readGT(Channel.Text, "tkvuquadruple", startTimeTxt.Text, auditLimitTxt.Text);
-            foreach (OtpErlangBinary item in res)
-            {
-                lastItemTxt.Text = item.stringValue();
+            string channel = (string)(((object[])e.Argument)[0]);
+            string startTime = (string)(((object[])e.Argument)[1]);
+            string limit = (string)(((object[])e.Argument)[2]);
+            int delay = (int)(((object[])e.Argument)[3]);
+            auditcount = 0;
+            auditstartedat = DateTime.Now;
+            DateTime start = DateTime.Now;
+            BackgroundWorker worker = sender as BackgroundWorker;
+            worker.ReportProgress(0, "");
+
+            while(true) {
+                if (worker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    break;
+                }
+                else
+                {
+                    object[] res;
+                    lock (imeminf) { res = imeminf.audit_readGT(channel, "tkvuquadruple", startTime, limit); }
+                    auditcount += res.Length;
+                    foreach (OtpErlangBinary item in res)
+                    {
+                        auditcount++;
+                        if (((DateTime.Now - start).TotalMilliseconds > 500 || auditcount % 100 == 0) && res.Length > 0)
+                        {
+                            start = DateTime.Now;
+                            try { worker.ReportProgress(0, item.stringValue()); }
+                            catch (Exception) { }
+                        }
+                    }
+                    if (res.Length > 0)
+                        startTime = ((OtpErlangBinary)res[res.Length - 1]).stringValue().Split(new char[] { '\t' })[0];
+                    if (delay > 0) Thread.Sleep(delay);
+                }
             }
         }
 
         private void bgAuditWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-
+            string audit = (string)e.UserState;
+            double rate = auditcount / (double)(DateTime.Now - auditstartedat).TotalSeconds;
+            auditReadCount.Text = "Read so far " + auditcount.ToString() + " @ " + rate.ToString("0.##/sec");
+            lastItemTxt.Text = string.Join("\r\n----\r\n", audit.Split(new char[] { '\t' }));
         }
 
-        private void bgAuditWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void stopAuditRead_Click(object sender, EventArgs e)
         {
+            bgAuditWorker.CancelAsync();
+            startAuditRead.Enabled = true;
+            stopAuditRead.Enabled = false;
+        }
 
+        private Queue keysQ = new Queue();
+        private void bgKeyLoadWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            string Channel = (string)(((object[])e.Argument)[0]);
+            string Item = (string)(((object[])e.Argument)[1]);
+            string CKey = (string)(((object[])e.Argument)[2]);
+            int Limit = (int)(((object[])e.Argument)[3]);
+            string keymatchregex = (string)(((object[])e.Argument)[4]);
+            int More = Limit;
+            BackgroundWorker worker = sender as BackgroundWorker;
+            DateTime start = DateTime.Now;
+            while (More > 0)
+            {
+                // Apply regex and collect untill 1000
+                Regex regex = new Regex(keymatchregex, RegexOptions.IgnoreCase);
+                object[] keys;
+                lock (imeminf)
+                {
+                    keys = imeminf.readGT(Channel, Item, CKey, More.ToString());
+                }
+                foreach (OtpErlangBinary key in keys)
+                {
+                    string kstr = key.stringValue();
+                    if (regex.Match(kstr).Success)
+                    {
+                        lock (keysQ) { keysQ.Enqueue(kstr); }
+                    }
+                }
+                if (keys.Length > 0 && More > 0 && keysQ.Count < Limit)
+                {
+                    string lastKey = ((OtpErlangBinary)keys[keys.Length - 1]).stringValue();
+                    CKey = lastKey;
+                    More = Limit - keysQ.Count;
+                }
+                else
+                {
+                    break;
+                }
+                if ((DateTime.Now - start).TotalMilliseconds > 500 || keysQ.Count > 500)
+                {
+                    start = DateTime.Now;
+                    try { worker.ReportProgress(0, ""); }
+                    catch (Exception) { }
+                }
+            }
+            try { worker.ReportProgress(0, ""); }
+            catch (Exception) { }
+        }
+
+        private void bgKeyLoadWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            while (keysQ.Count > 0)
+            {
+                lock (keysQ) { keyList.Items.Add((string)keysQ.Dequeue()); }
+                if (keyList.Items.Count % 100 == 0)
+                {
+                    keyList.Items[keyList.Items.Count - 1].EnsureVisible();
+                    Application.DoEvents();
+                }
+            }
+        }
+
+        private void bgKeyLoadWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            getKeys.Enabled = true;
         }
     }
 }
