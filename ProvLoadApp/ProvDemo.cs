@@ -263,6 +263,8 @@ namespace ProvLoadApp
 
         private void startAuditRead_Click(object sender, EventArgs e)
         {
+            auditReadCount.Text = "Read so far";
+            lastItemTxt.Text = "";
             bgAuditWorker.RunWorkerAsync(new object[] { Channel.Text, startTimeTxt.Text, auditLimitTxt.Text, int.Parse(auditDelayTxt.Text) });
             startedat = DateTime.Now;
             startAuditRead.Enabled = false;
@@ -271,6 +273,7 @@ namespace ProvLoadApp
 
         private long auditcount = 0;
         private DateTime auditstartedat;
+        private bool audit_idle = false;
         private void bgAuditWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             string channel = (string)(((object[])e.Argument)[0]);
@@ -281,8 +284,8 @@ namespace ProvLoadApp
             auditstartedat = DateTime.Now;
             DateTime start = DateTime.Now;
             BackgroundWorker worker = sender as BackgroundWorker;
-            worker.ReportProgress(0, "");
-
+            // worker.ReportProgress(0, "");
+            audit_idle = false;
             while (true)
             {
                 if (worker.CancellationPending)
@@ -299,8 +302,7 @@ namespace ProvLoadApp
                         auditcount += res.Length;
                         foreach (OtpErlangBinary item in res)
                         {
-                            auditcount++;
-                            if (((DateTime.Now - start).TotalMilliseconds > 500 || auditcount % 100 == 0) && res.Length > 0)
+                            if ((DateTime.Now - start).TotalMilliseconds > 500 || auditcount % 100 == 0)
                             {
                                 start = DateTime.Now;
                                 try { worker.ReportProgress(0, item.stringValue()); }
@@ -309,6 +311,12 @@ namespace ProvLoadApp
                         }
                         if (res.Length > 0)
                             startTime = ((OtpErlangBinary)res[res.Length - 1]).stringValue().Split(new char[] { '\t' })[0];
+                        else
+                        {
+                            audit_idle = true;
+                            try { worker.ReportProgress(0, ""); }
+                            catch (Exception) { }
+                        }
                         if (delay > 0) Thread.Sleep(delay);
                     }
                     catch (Exception ex)
@@ -320,18 +328,25 @@ namespace ProvLoadApp
             }
         }
 
+        private double rate;
         private void bgAuditWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (e.UserState is Exception)
             {
                 MessageBox.Show(((Exception)e.UserState).Message + "\n" + ((Exception)e.UserState).StackTrace);
             }
-            else
+            else if (((string)e.UserState).Length > 0)
             {
                 string audit = (string)e.UserState;
-                double rate = auditcount / (double)(DateTime.Now - auditstartedat).TotalSeconds;
+                if (!audit_idle) rate = auditcount / (double)(DateTime.Now - auditstartedat).TotalSeconds;
                 auditReadCount.Text = "Read so far " + auditcount.ToString() + " @ " + rate.ToString("0.##/sec");
                 lastItemTxt.Text = string.Join("\r\n----\r\n", audit.Split(new char[] { '\t' }));
+                auditReadCount.Refresh();
+            }
+            else
+            {
+                auditReadCount.Text = "Read so far " + auditcount.ToString() + " @ " + rate.ToString("0.##/sec");
+                auditReadCount.Refresh();
             }
         }
 

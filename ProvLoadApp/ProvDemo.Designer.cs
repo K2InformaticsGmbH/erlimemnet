@@ -33,6 +33,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.lastValue = new System.Windows.Forms.RichTextBox();
             this.testControls = new System.Windows.Forms.GroupBox();
+            this.keysCount = new System.Windows.Forms.Label();
             this.readCount = new System.Windows.Forms.Label();
             this.lastKey = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -69,7 +70,6 @@
             this.Channel = new System.Windows.Forms.TextBox();
             this.bgAuditWorker = new System.ComponentModel.BackgroundWorker();
             this.bgKeyLoadWorker = new System.ComponentModel.BackgroundWorker();
-            this.keysCount = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.testControls.SuspendLayout();
@@ -142,6 +142,15 @@
             this.testControls.Size = new System.Drawing.Size(596, 97);
             this.testControls.TabIndex = 31;
             this.testControls.TabStop = false;
+            // 
+            // keysCount
+            // 
+            this.keysCount.AutoSize = true;
+            this.keysCount.Location = new System.Drawing.Point(431, 14);
+            this.keysCount.Name = "keysCount";
+            this.keysCount.Size = new System.Drawing.Size(36, 13);
+            this.keysCount.TabIndex = 32;
+            this.keysCount.Text = "Keys :";
             // 
             // readCount
             // 
@@ -338,7 +347,7 @@
             this.lastItemTxt.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lastItemTxt.Location = new System.Drawing.Point(2, 47);
             this.lastItemTxt.Name = "lastItemTxt";
-            this.lastItemTxt.Size = new System.Drawing.Size(774, 506);
+            this.lastItemTxt.Size = new System.Drawing.Size(774, 517);
             this.lastItemTxt.TabIndex = 46;
             this.lastItemTxt.Text = "";
             this.lastItemTxt.WordWrap = false;
@@ -489,20 +498,11 @@
             this.bgKeyLoadWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgKeyLoadWorker_ProgressChanged);
             this.bgKeyLoadWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgKeyLoadWorker_RunWorkerCompleted);
             // 
-            // keysCount
-            // 
-            this.keysCount.AutoSize = true;
-            this.keysCount.Location = new System.Drawing.Point(431, 14);
-            this.keysCount.Name = "keysCount";
-            this.keysCount.Size = new System.Drawing.Size(36, 13);
-            this.keysCount.TabIndex = 32;
-            this.keysCount.Text = "Keys :";
-            // 
             // ProvDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 614);
+            this.ClientSize = new System.Drawing.Size(792, 614);
             this.Controls.Add(this.Channel);
             this.Controls.Add(this.connStatus);
             this.Controls.Add(this.ip);
@@ -514,9 +514,9 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.tabControl1);
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(800, 500);
+            this.MinimumSize = new System.Drawing.Size(800, 300);
             this.Name = "ProvDemo";
-            this.Text = "Provisioning Demo";
+            this.Text = "Provisioning Consumer Demo";
             this.Load += new System.EventHandler(this.ProvDemo_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
