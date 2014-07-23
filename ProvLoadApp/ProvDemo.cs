@@ -108,6 +108,11 @@ namespace ProvLoadApp
                 {
                     connStatus.ForeColor = Color.IndianRed;
                     connStatus.Text = "Connect Error : " + ixe.Message;
+                    ip.Enabled = true;
+                    port.Enabled = true;
+                    ssl.Enabled = true;
+                    user.Enabled = true;
+                    password.Enabled = true;
                 }
             }
             else // Handle Disconnect
@@ -266,7 +271,6 @@ namespace ProvLoadApp
             auditReadCount.Text = "Read so far";
             lastItemTxt.Text = "";
             bgAuditWorker.RunWorkerAsync(new object[] { Channel.Text, startTimeTxt.Text, auditLimitTxt.Text, int.Parse(auditDelayTxt.Text) });
-            startedat = DateTime.Now;
             startAuditRead.Enabled = false;
             stopAuditRead.Enabled = true;
         }
@@ -284,7 +288,6 @@ namespace ProvLoadApp
             auditstartedat = DateTime.Now;
             DateTime start = DateTime.Now;
             BackgroundWorker worker = sender as BackgroundWorker;
-            // worker.ReportProgress(0, "");
             audit_idle = false;
             while (true)
             {
@@ -318,6 +321,7 @@ namespace ProvLoadApp
                             catch (Exception) { }
                         }
                         if (delay > 0) Thread.Sleep(delay);
+                        if (res.Length == 0) Thread.Sleep(100);
                     }
                     catch (Exception ex)
                     {
@@ -429,7 +433,7 @@ namespace ProvLoadApp
                         Application.DoEvents();
                     }
                 }
-                if (e.UserState is string && ((string)e.UserState) == "complete")
+                if (e.UserState is string && ((string)e.UserState) == "complete" && keyList.Items.Count > 0)
                 {
                     keyList.Items[keyList.Items.Count - 1].EnsureVisible();
                     keysCount.Text = "Keys : " + keyList.Items.Count;
