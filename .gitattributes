@@ -2,6 +2,8 @@
 
 # Denote all files that are truly binary and should not be modified.
 *.dll binary
+*.exe binary
+*.msi binary
 *.vb text eol=crlf
 *.cs text eol=crlf
 
