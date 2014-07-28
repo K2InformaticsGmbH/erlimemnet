@@ -10,6 +10,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "console", "console\console.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProvLoadApp", "ProvLoadApp\ProvLoadApp.csproj", "{BADDE976-BAA3-4C57-B4CE-AECB05AFB53E}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ProvLoadAppSetup", "ProvLoadAppSetup\ProvLoadAppSetup.vdproj", "{BCA118F9-7D35-4C9C-91FC-2E4DB1AE8D19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,8 @@ Global
 		{BADDE976-BAA3-4C57-B4CE-AECB05AFB53E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BADDE976-BAA3-4C57-B4CE-AECB05AFB53E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BADDE976-BAA3-4C57-B4CE-AECB05AFB53E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCA118F9-7D35-4C9C-91FC-2E4DB1AE8D19}.Debug|Any CPU.ActiveCfg = Debug
+		{BCA118F9-7D35-4C9C-91FC-2E4DB1AE8D19}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
